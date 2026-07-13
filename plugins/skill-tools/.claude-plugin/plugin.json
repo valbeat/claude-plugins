@@ -1,0 +1,8 @@
+{
+  "name": "skill-tools",
+  "description": "Meta skills — create new Claude skills and maintain CLAUDE.md rules",
+  "version": "0.1.0",
+  "author": {
+    "name": "valbeat"
+  }
+}

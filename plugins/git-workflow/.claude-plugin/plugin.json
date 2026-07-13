@@ -1,0 +1,8 @@
+{
+  "name": "git-workflow",
+  "description": "Git/GitHub workflow skills — commits, PRs, issues, dependabot merges, and DORA metrics",
+  "version": "0.1.0",
+  "author": {
+    "name": "valbeat"
+  }
+}

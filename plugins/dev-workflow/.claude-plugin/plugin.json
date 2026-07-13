@@ -1,0 +1,8 @@
+{
+  "name": "dev-workflow",
+  "description": "Development workflow skills — spec planning, TDD implementation, design interviews, and quality checks",
+  "version": "0.1.0",
+  "author": {
+    "name": "valbeat"
+  }
+}

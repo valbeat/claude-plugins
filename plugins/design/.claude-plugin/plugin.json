@@ -1,0 +1,8 @@
+{
+  "name": "design",
+  "description": "Design analysis skills — extract design guidelines from images and audit UI against web interface guidelines",
+  "version": "0.1.0",
+  "author": {
+    "name": "valbeat"
+  }
+}

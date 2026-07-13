@@ -1,0 +1,38 @@
+{
+  "name": "valbeat-plugins",
+  "owner": {
+    "name": "valbeat",
+    "url": "https://github.com/valbeat"
+  },
+  "metadata": {
+    "description": "Personal Claude Code plugins by valbeat — writing standards, design analysis, and dev workflows",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "writing",
+      "source": "./plugins/writing",
+      "description": "Japanese technical writing standards — style, rigor, and cognitive rhythm for technical prose"
+    },
+    {
+      "name": "design",
+      "source": "./plugins/design",
+      "description": "Design analysis skills — extract design guidelines from images and audit UI against web interface guidelines"
+    },
+    {
+      "name": "git-workflow",
+      "source": "./plugins/git-workflow",
+      "description": "Git/GitHub workflow skills — commits, PRs, issues, dependabot merges, and DORA metrics"
+    },
+    {
+      "name": "dev-workflow",
+      "source": "./plugins/dev-workflow",
+      "description": "Development workflow skills — spec planning, TDD implementation, design interviews, and quality checks"
+    },
+    {
+      "name": "skill-tools",
+      "source": "./plugins/skill-tools",
+      "description": "Meta skills — create new Claude skills and maintain CLAUDE.md rules"
+    }
+  ]
+}
