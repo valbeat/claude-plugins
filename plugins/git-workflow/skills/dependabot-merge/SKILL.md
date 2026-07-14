@@ -10,7 +10,7 @@ description: >-
 argument-hint: "[--dry-run] [--include-major] [--org <name>] [--repo <owner/name>]"
 ---
 
-# Dependabot Auto-Merge Skill
+# Dependabot 自動マージ
 
 すべてのオープンな Dependabot PR を自動レビューし、auto-merge を有効化する。
 単一リポジトリ、org 全体、特定リポジトリへの絞り込みに対応する。
@@ -61,10 +61,10 @@ gh repo list <org> --no-archived --source --json nameWithOwner --limit 500 -q '.
 
 3. **各対象リポジトリについて、オープンな Dependabot PR を取得する**
    ```bash
-   # Single repo (current directory)
+   # 単一リポジトリ（カレントディレクトリ）
    gh pr list --author app/dependabot --state open --json number,title,url,headRefName
 
-   # Specific repo or org-wide iteration
+   # 特定リポジトリまたは組織全体での反復処理
    gh pr list --repo <owner/name> --author app/dependabot --state open --json number,title,url,headRefName
    ```
    - オープンな Dependabot PR が0件のリポジトリはスキップする（スキップしたリポジトリの出力は不要）
@@ -79,9 +79,9 @@ gh repo list <org> --no-archived --source --json nameWithOwner --limit 500 -q '.
 
 6. **PR の diff を取得する**
    ```bash
-   # Current repo
+   # 現在のリポジトリ
    gh pr diff <number>
-   # Specific repo
+   # 特定リポジトリ
    gh pr diff <number> --repo <owner/name>
    ```
 
@@ -128,7 +128,7 @@ Dependabot の PR タイトルは以下のパターンに従う:
 - **パースできないバージョン**（タイトルに明確な old→new の semver がない）: `major` として
   分類し、手動レビュー用にログ出力する — 推測しない
 
-## Review Comment Template
+## レビューコメントテンプレート
 
 レビューコメントはすべて英語で書く:
 
@@ -152,7 +152,7 @@ This update has been reviewed and approved for auto-merge.
 
 ## 出力フォーマット
 
-### Single Repo Mode
+### 単一リポジトリモード
 
 ```markdown
 ## Dependabot Auto-Merge Summary
@@ -171,7 +171,7 @@ This update has been reviewed and approved for auto-merge.
 - **Failed**: W
 ```
 
-### Org / Multi-Repo Mode
+### Org / 複数リポジトリモード
 
 結果をリポジトリ別にグループ化する:
 
@@ -199,7 +199,7 @@ This update has been reviewed and approved for auto-merge.
 - **Failed**: W
 ```
 
-## Safety Notes
+## 安全に関する注意
 
 1. **メジャー更新はデフォルトでスキップする** — 破壊的変更を含む可能性があり、手動レビューとテストが必要になるため。
 
@@ -214,7 +214,7 @@ This update has been reviewed and approved for auto-merge.
 
 4. **まず dry-run で確認する**: 慣れないリポジトリでは必ず `--dry-run` を使い、処理対象を事前に確認する。
 
-## Error Handling
+## エラー処理
 
 - PR を処理できない場合、エラーをログに残し、次の PR の処理を続ける
 - 最終サマリーですべての失敗を報告する

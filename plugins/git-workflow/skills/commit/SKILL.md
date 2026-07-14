@@ -9,7 +9,7 @@ description: >-
   "conventional commit" と言った場合に使う。
 ---
 
-# Conventional Commit Command
+# Conventional Commit コマンド
 
 ## Context
 

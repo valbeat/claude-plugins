@@ -11,7 +11,7 @@ description: >-
 model: sonnet
 ---
 
-# Four Keys (DORA Metrics) Measurement
+# Four Keys（DORAメトリクス）計測
 
 ## Context
 
@@ -19,7 +19,7 @@ model: sonnet
 - デフォルトブランチ: !`gh repo view --json defaultBranchRef -q .defaultBranchRef.name 2>/dev/null || echo "unknown"`
 - GitHub CLI アクセス: 必須
 
-## Overview
+## 概要
 
 GitHub リポジトリから4つの DORA (DevOps Research and Assessment) メトリクスを計測する:
 
@@ -33,20 +33,20 @@ GitHub リポジトリから4つの DORA (DevOps Research and Assessment) メト
 | 引数 | デフォルト | 説明 |
 |----------|---------|-------------|
 | `--period` | `90d` | 分析期間: `30d`, `90d`, `180d`, `1y` |
-| `--repo` | (current) | 対象リポジトリ（`owner/repo`） |
+| `--repo` | (現在のリポジトリ) | 対象リポジトリ（`owner/repo`） |
 | `--deploy-tag-pattern` | `v*` | デプロイを識別するタグの glob パターン |
-| `--deploy-workflow` | (none) | デプロイに使う GitHub Actions のワークフロー名 |
-| `--deploy-branch` | default branch | デプロイを追跡するブランチ |
+| `--deploy-workflow` | (なし) | デプロイに使う GitHub Actions のワークフロー名 |
+| `--deploy-branch` | デフォルトブランチ | デプロイを追跡するブランチ |
 | `--failure-labels` | `bug,incident,hotfix` | デプロイ障害を示す Issue/PR ラベル |
 
-## Measurement Process
+## 計測プロセス
 
 ### Step 1: 分析期間を決定する
 
 `--period` 引数（デフォルト: 90d）をパースし、開始日を計算する。
 
 ```bash
-# Calculate start date
+# 開始日を計算する
 START_DATE=$(date -v-90d +%Y-%m-%dT00:00:00Z 2>/dev/null || date -d "90 days ago" --iso-8601=seconds 2>/dev/null)
 ```
 
@@ -81,29 +81,29 @@ git tag --sort=-creatordate --format='%(creatordate:iso-strict) %(refname:short)
 
 どの戦略を使い、いくつのデプロイが見つかったかを報告する。
 
-### Step 3: Deployment Frequency (DF)
+### Step 3: デプロイ頻度（DF）
 
 以下を計算する:
 - 期間内のデプロイ合計数
 - 日次/週次/月次のデプロイ数
 - パフォーマンスレベルを分類する
 
-**Performance Levels:**
-| Level | Frequency |
+**パフォーマンスレベル:**
+| レベル | 頻度 |
 |-------|-----------|
 | Elite | オンデマンド（1日に複数回） |
 | High | 1日1回〜週1回の間 |
 | Medium | 週1回〜月1回の間 |
 | Low | 月1回未満 |
 
-### Step 4: Lead Time for Changes (LT)
+### Step 4: 変更のリードタイム（LT）
 
 各デプロイについて、含まれるコミットを特定し、最初のコミットからデプロイまでの時間を計算する:
 
 ```bash
-# For each pair of consecutive deployments (tags/releases)
+# 連続するデプロイ（タグ/リリース）のペアごとに
 git log --format="%H %aI" "$PREV_TAG..$CURRENT_TAG" --first-parent
-# Lead time = deploy timestamp - earliest commit timestamp
+# リードタイム = デプロイのタイムスタンプ - 最も早いコミットのタイムスタンプ
 ```
 
 以下を計算する:
@@ -111,15 +111,15 @@ git log --format="%H %aI" "$PREV_TAG..$CURRENT_TAG" --first-parent
 - P50, P90 のリードタイム
 - パフォーマンスレベルを分類する
 
-**Performance Levels:**
-| Level | Lead Time |
+**パフォーマンスレベル:**
+| レベル | リードタイム |
 |-------|-----------|
 | Elite | 1時間未満 |
 | High | 1日〜1週間の間 |
 | Medium | 1週間〜1ヶ月の間 |
 | Low | 1ヶ月超 |
 
-### Step 5: Change Failure Rate (CFR)
+### Step 5: 変更失敗率（CFR）
 
 以下を確認して障害を特定する:
 
@@ -142,15 +142,15 @@ gh issue list --state closed --label "bug,incident,hotfix" \
 - 障害を引き起こしたデプロイ数 / デプロイ合計数
 - パフォーマンスレベルを分類する
 
-**Performance Levels:**
-| Level | CFR |
+**パフォーマンスレベル:**
+| レベル | CFR |
 |-------|-----|
 | Elite | 0-5% |
 | High | 5-10% |
 | Medium | 10-15% |
 | Low | 16-30%+ |
 
-### Step 6: Mean Time to Recovery (MTTR)
+### Step 6: 平均修復時間（MTTR）
 
 特定した障害について、復旧時間を計算する:
 
@@ -158,14 +158,14 @@ gh issue list --state closed --label "bug,incident,hotfix" \
 2. 障害検知から復旧までの時間を計算する
 
 ```bash
-# For issues with failure labels
+# 障害ラベル付きのissueについて
 gh issue list --state closed --label "bug,incident" \
   --json createdAt,closedAt \
   --jq "[.[] | select(.createdAt >= \"$START_DATE\") | {created: .createdAt, closed: .closedAt}]"
 ```
 
-**Performance Levels:**
-| Level | MTTR |
+**パフォーマンスレベル:**
+| レベル | MTTR |
 |-------|------|
 | Elite | 1時間未満 |
 | High | 1日未満 |
@@ -231,14 +231,14 @@ gh issue list --state closed --label "bug,incident" \
 [Based on metrics, provide actionable recommendations to improve each metric]
 ```
 
-## Performance Level Icons
+## パフォーマンスレベルのアイコン
 
 - ⭐ Elite
 - 🟢 High
 - 🟡 Medium
 - 🔴 Low
 
-## Notes
+## 注意事項
 
 - 対象リポジトリへのアクセス権を持つ `gh` CLI の認証が必要
 - 精度は一貫したデプロイ運用（タグ、リリース、ワークフロー）に依存する
@@ -247,21 +247,21 @@ gh issue list --state closed --label "bug,incident" \
 - 最良の結果を得るには、リリース/タグの命名規則を一貫させ、インシデントに適切にラベルを付けること
 - どのデプロイ検出戦略でも結果が得られない場合は、その制約を報告し、設定改善を提案する
 
-## Examples
+## 例
 
 ```bash
-# Measure current repo, last 90 days (default)
+# 現在のリポジトリを直近90日間で計測（デフォルト）
 /four-keys
 
-# Measure specific repo, last 180 days
+# 特定のリポジトリを直近180日間で計測
 /four-keys --repo facebook/react --period 180d
 
-# Use workflow-based deployment detection
+# ワークフローベースのデプロイ検出を使う
 /four-keys --deploy-workflow "production-deploy"
 
-# Custom tag pattern and period
+# カスタムのタグパターンと期間
 /four-keys --deploy-tag-pattern "release-*" --period 1y
 
-# Custom failure labels
+# カスタムの障害ラベル
 /four-keys --failure-labels "bug,outage,p0"
 ```
