@@ -1,7 +1,7 @@
 {
   "name": "design",
   "description": "デザイン分析スキル — 画像からのガイドライン抽出と Web Interface Guidelines 準拠監査",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "valbeat"
   }

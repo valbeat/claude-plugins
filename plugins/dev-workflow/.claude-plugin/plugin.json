@@ -1,7 +1,7 @@
 {
   "name": "dev-workflow",
   "description": "開発ワークフロースキル — 仕様策定、TDD 実装、設計インタビュー、品質チェック",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "valbeat"
   }

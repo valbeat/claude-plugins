@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "valbeat の個人用 Claude Code プラグイン — 文章規範・デザイン分析・開発ワークフロー",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
   "plugins": [
     {
