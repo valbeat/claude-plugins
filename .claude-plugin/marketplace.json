@@ -5,34 +5,34 @@
     "url": "https://github.com/valbeat"
   },
   "metadata": {
-    "description": "Personal Claude Code plugins by valbeat — writing standards, design analysis, and dev workflows",
+    "description": "valbeat の個人用 Claude Code プラグイン — 文章規範・デザイン分析・開発ワークフロー",
     "version": "0.1.0"
   },
   "plugins": [
     {
       "name": "writing",
       "source": "./plugins/writing",
-      "description": "Japanese technical writing standards — style, rigor, and cognitive rhythm for technical prose"
+      "description": "日本語技術文書の文章規範 — 整形・論証の厳密さ・認知リズムの設計"
     },
     {
       "name": "design",
       "source": "./plugins/design",
-      "description": "Design analysis skills — extract design guidelines from images and audit UI against web interface guidelines"
+      "description": "デザイン分析スキル — 画像からのガイドライン抽出と Web Interface Guidelines 準拠監査"
     },
     {
       "name": "git-workflow",
       "source": "./plugins/git-workflow",
-      "description": "Git/GitHub workflow skills — commits, PRs, issues, dependabot merges, and DORA metrics"
+      "description": "Git/GitHub ワークフロースキル — コミット、PR、issue、dependabot マージ、DORA メトリクス"
     },
     {
       "name": "dev-workflow",
       "source": "./plugins/dev-workflow",
-      "description": "Development workflow skills — spec planning, TDD implementation, design interviews, and quality checks"
+      "description": "開発ワークフロースキル — 仕様策定、TDD 実装、設計インタビュー、品質チェック"
     },
     {
       "name": "skill-tools",
       "source": "./plugins/skill-tools",
-      "description": "Meta skills — create new Claude skills and maintain CLAUDE.md rules"
+      "description": "メタスキル — スキル作成と CLAUDE.md ルール管理"
     }
   ]
 }

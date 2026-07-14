@@ -1,104 +1,104 @@
-# Skill Categories and Patterns
+# スキルのカテゴリとパターン
 
-## Three Categories
+## 3つのカテゴリ
 
 ### 1. Document & Asset Creation
 
-Skills that produce artifacts — documents, configs, code files, reports.
+ドキュメント、設定ファイル、コードファイル、レポートなどの成果物を生成するスキル。
 
-**Examples**: generate PRD, create migration script, write test suite, build config file
+**例**: PRD の生成、migration スクリプトの作成、テストスイートの記述、設定ファイルの構築
 
-**Key traits**:
-- Clear output artifact
-- Often uses templates
-- Result is a file or document
+**主な特徴**:
+- 明確な出力成果物がある
+- テンプレートを使うことが多い
+- 結果はファイルやドキュメントになる
 
 ### 2. Workflow Automation
 
-Skills that orchestrate multi-step processes — CI/CD, deployment, review flows.
+CI/CD、デプロイ、レビューフローなど、複数ステップのプロセスを統括するスキル。
 
-**Examples**: deploy to staging, run full test suite with reporting, PR review workflow
+**例**: ステージングへのデプロイ、レポート付きの全テストスイート実行、PR レビューワークフロー
 
-**Key traits**:
-- Multiple sequential or parallel steps
-- Often interacts with external tools (git, gh, npm)
-- May require user confirmation at checkpoints
+**主な特徴**:
+- 順次または並列の複数ステップ
+- 外部ツール（git, gh, npm）とやり取りすることが多い
+- チェックポイントでユーザーの確認が必要な場合がある
 
 ### 3. MCP Enhancement
 
-Skills that leverage MCP servers for extended capabilities.
+MCP サーバーを活用して機能を拡張するスキル。
 
-**Examples**: Figma-to-code, Slack notification, database query helper
+**例**: Figma からコードへの変換、Slack 通知、データベースクエリのヘルパー
 
-**Key traits**:
-- Depends on specific MCP server availability
-- Bridges Claude with external services
-- May need connection validation
+**主な特徴**:
+- 特定の MCP サーバーの可用性に依存する
+- Claude と外部サービスの橋渡しをする
+- 接続の検証が必要な場合がある
 
-## Five Patterns
+## 5つのパターン
 
-### 1. Sequential Workflow
+### 1. Sequential Workflow（逐次ワークフロー）
 
-Steps execute in a fixed order. Each step depends on the previous.
+ステップが固定順序で実行される。各ステップは前のステップに依存する。
 
 ```
 Step 1 → Step 2 → Step 3 → Output
 ```
 
-**Best for**: deployment pipelines, document generation, migration scripts
+**向いている用途**: デプロイパイプライン、ドキュメント生成、migration スクリプト
 
-### 2. Multi-MCP Coordination
+### 2. Multi-MCP Coordination（複数 MCP の連携）
 
-Combines multiple MCP servers or tools in a single workflow.
+複数の MCP サーバーやツールを1つのワークフローに組み合わせる。
 
 ```
 MCP-A (read) → Process → MCP-B (write) → Verify
 ```
 
-**Best for**: cross-service automation, data sync, integration tasks
+**向いている用途**: サービス横断の自動化、データ同期、統合タスク
 
-### 3. Iterative Refinement
+### 3. Iterative Refinement（反復的な改善）
 
-Produces output, gets feedback, and improves in a loop.
+出力を生成し、フィードバックを得て、ループの中で改善していく。
 
 ```
-Generate → Review → Refine → (repeat until satisfied)
+Generate → Review → Refine → (satisfied になるまで繰り返す)
 ```
 
-**Best for**: code review, document drafting, design iteration
+**向いている用途**: コードレビュー、ドキュメントのドラフト作成、デザインの反復
 
-### 4. Context-Aware Tool Selection
+### 4. Context-Aware Tool Selection（文脈に応じたツール選択）
 
-Inspects the environment to decide which tools/approaches to use.
+環境を検査し、使うツールやアプローチを決定する。
 
 ```
 Detect context → Select strategy → Execute → Verify
 ```
 
-**Best for**: polyglot tools, environment-adaptive scripts, smart defaults
+**向いている用途**: 複数言語対応ツール、環境に適応するスクリプト、賢いデフォルト設定
 
-### 5. Domain-Specific Intelligence
+### 5. Domain-Specific Intelligence（ドメイン固有の知見）
 
-Encodes deep domain knowledge into structured guidance.
+深いドメイン知識を構造化されたガイダンスとして組み込む。
 
 ```
 Gather input → Apply domain rules → Generate expert output
 ```
 
-**Best for**: security audits, accessibility checks, performance optimization
+**向いている用途**: セキュリティ監査、アクセシビリティチェック、パフォーマンス最適化
 
-## Problem-First vs Tool-First
+## Problem-First と Tool-First
 
-### Problem-First (Recommended)
+### Problem-First（推奨）
 
-Start from the user's problem, then find the right tools.
+ユーザーの問題から出発し、そこから適切なツールを見つける。
 
-> "Users need to review PRs efficiently" → design the workflow → select tools
+> 「ユーザーは PR を効率的にレビューする必要がある」 → ワークフローを設計する → ツールを選ぶ
 
 ### Tool-First
 
-Start from available tools and build a skill around them.
+利用可能なツールから出発し、それを中心にスキルを構築する。
 
-> "We have Figma MCP" → build a Figma-to-code skill
+> 「Figma MCP がある」 → Figma からコードへ変換するスキルを構築する
 
-**When to use Tool-First**: only when a new MCP server or tool creates an obvious capability that users will want.
+**Tool-First を使うべき場面**: 新しい MCP サーバーやツールが、ユーザーが求める明白な機能を生み出す場合に限る。

@@ -2,29 +2,29 @@
 name: issue
 allowed-tools: Read, Bash(gh:*), Glob, Grep
 description: >-
-  Analyzes a GitHub issue and enriches it with implementation details, specs,
-  and plans. Use when enriching issues, adding specs, or when the user says
-  "enrich issue", "detail issue", or "spec issue #N".
+  GitHub Issue を分析し、実装の詳細・仕様・計画を補って拡充する。
+  Issue の拡充や仕様追加をする時、あるいはユーザーが
+  "enrich issue"、"detail issue"、"spec issue #N" と言った場合に使う。
 ---
 
-# Enrich Issue
+# Issueの拡充
 
 ## Context
 
 - Current repository: !`gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || echo "Not a GitHub repository"`
 - Project documentation: @.claude/CLAUDE.md
-- Codebase structure: Available for analysis to provide implementation guidance
+- Codebase structure: 実装ガイダンスを提供するための分析対象として利用可能
 
-## Your task
+## タスク
 
 GitHub Issueの内容を分析し、プロジェクトのドキュメントやコーディング規約を参照して実装計画や仕様を詳細に補足する。Issue を開発者にとってより実行可能な形に強化する。
 
-## Usage
+## 使い方
 ```
 Enrich issue #<issue-number>
 ```
 
-## Arguments (Optional)
+## 引数（任意）
 - `--mode <type>`: 補足モード (spec|plan|both) デフォルト: both
   - `spec`: 技術仕様の詳細化
   - `plan`: 実装計画の作成
@@ -254,7 +254,7 @@ EOF
 - 過度に詳細になりすぎないようバランスを取る
 - チーム固有の用語や略語を尊重
 
-## Examples
+## 例
 
 ### シンプルなバグ修正Issue
 ```bash

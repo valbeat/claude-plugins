@@ -1,51 +1,51 @@
 ---
 name: impl
 description: >-
-  Implements features or fixes bugs following TDD methodology with strict
-  RED→GREEN→REFACTOR cycle. Use when implementing features, fixing bugs
-  with TDD, or when the user says "implement", "build feature", or "TDD".
+  厳格な RED→GREEN→REFACTOR サイクルによる TDD 手法に従って、機能実装や
+  バグ修正を行う。機能を実装するとき、TDD でバグを修正するとき、または
+  ユーザーが "implement", "build feature", "TDD" と発言したときに使う。
 argument-hint: "[task description]"
 ---
 
-# /impl - TDD Development Command
+# /impl - TDD 開発コマンド
 
-This command follows Kent Beck's TDD methodology.
-Strictly adheres to the RED→GREEN→REFACTOR cycle with a test-first approach.
+このコマンドは Kent Beck の TDD 手法に従う。
+テストファーストのアプローチで RED→GREEN→REFACTOR サイクルを厳格に遵守する。
 
-**Integrated commands**: Uses `/check` and `/review` internally.
+**統合コマンド**: 内部で `/check` と `/review` を使用する。
 
-## Usage
+## 使い方
 
 ```bash
 /impl Add validation to login form
-/impl  # Start interactively
+/impl  # 対話形式で開始
 ```
 
 ---
 
-## [1/4] Task Preparation
+## [1/4] タスク準備
 
-### Get Task Description
+### タスク説明の取得
 
-- If `$ARGUMENTS` exists: Use as-is
-- If empty: Ask with AskUserQuestion
+- `$ARGUMENTS` が存在する場合: そのまま使用
+- 空の場合: AskUserQuestion で確認
 
-### Branch Guard
+### ブランチガード
 
-This command commits during the TDD cycle. Before starting, check the current branch:
-if on `main`/`master`, create a feature branch first
-(`git switch -c feat/<short-description>` or `fix/<short-description>`).
-Never commit directly to the base branch.
+このコマンドは TDD サイクル中にコミットを行う。開始前に現在のブランチを確認し、
+`main`/`master` 上であれば先に feature ブランチを作成する
+（`git switch -c feat/<short-description>` または `fix/<short-description>`）。
+ベースブランチへの直接コミットは絶対に行わない。
 
-### Check Existing Documents
+### 既存ドキュメントの確認
 
-Check for `docs/DESIGN.md` and `docs/TODO.md` using Read tool.
+Read ツールで `docs/DESIGN.md` と `docs/TODO.md` の存在を確認する。
 
-**If docs/TODO.md exists**:
-- Read content and understand phase structure
-- Check RED/GREEN/REFACTOR tasks in each phase
+**docs/TODO.md が存在する場合**:
+- 内容を読み、フェーズ構造を把握する
+- 各フェーズの RED/GREEN/REFACTOR タスクを確認する
 
-TODO.md structure example:
+TODO.md 構造の例:
 ```markdown
 ### Phase 1: Implement version calculation
 
@@ -56,92 +56,92 @@ TODO.md structure example:
 
 ---
 
-## [2/4] Phase Execution
+## [2/4] フェーズ実行
 
-### Manage Tasks with TodoWrite
+### TodoWrite によるタスク管理
 
-Manage current phase tasks with TodoWrite.
+現在のフェーズのタスクを TodoWrite で管理する。
 
-### RED-GREEN-REFACTOR Cycle
+### RED-GREEN-REFACTOR サイクル
 
-#### RED (Write Test)
+#### RED（テストを書く）
 
-1. Update TodoWrite to `in_progress`
-2. Write test based on expected input/output
-3. Run `/check --test`, **confirm failure**
-4. **Verify the test fails for the RIGHT reason**:
-   - Correct: assertion failure (expected vs actual mismatch)
-   - Wrong: compile error, import error, syntax error, missing fixture
-   - If it fails for the wrong reason, fix the test setup and re-run until the
-     failure is an assertion failure
-5. Commit on failure (proves test is correct). Commit message: `test: <what the test verifies>`
-6. Update TodoWrite to `completed`
+1. TodoWrite を `in_progress` に更新
+2. 期待される入出力に基づきテストを書く
+3. `/check --test` を実行し、**失敗を確認する**
+4. **テストが正しい理由で失敗しているか検証する**:
+   - 正しい: アサーション失敗（期待値と実際値の不一致）
+   - 誤り: コンパイルエラー、import エラー、構文エラー、fixture 不足
+   - 誤った理由で失敗している場合は、テストのセットアップを修正し、
+     アサーション失敗になるまで再実行する
+5. 失敗した状態でコミットする（テストが正しいことの証明）。コミットメッセージ: `test: <what the test verifies>`
+6. TodoWrite を `completed` に更新
 
-#### GREEN (Implement)
+#### GREEN（実装する）
 
-1. Update TodoWrite to `in_progress`
-2. Write **minimal implementation** to pass test
-3. Run `/check --test`, **confirm success**
-4. **Do NOT modify the test to make it pass.** If the test itself looks wrong,
-   stop and confirm with the user before changing it
-5. If tests still fail after 3 fix attempts, stop and report the failure output to the user
-6. Update TodoWrite to `completed`
+1. TodoWrite を `in_progress` に更新
+2. テストをパスさせる**最小限の実装**を書く
+3. `/check --test` を実行し、**成功を確認する**
+4. **テストをパスさせるためにテスト自体を修正してはならない。** テスト自体が誤って
+   いるように見える場合は、変更前に一旦停止しユーザーに確認する
+5. 3回修正を試みてもテストが失敗し続ける場合は、一旦停止し失敗内容をユーザーに報告する
+6. TodoWrite を `completed` に更新
 
 #### REFACTOR
 
-1. Update TodoWrite to `in_progress`
-2. Improve code quality following design principles
-3. Run `/check --test`, **maintain success** (tests must not be modified)
-4. If nothing needs refactoring, state so explicitly and skip (do not invent changes)
-5. Update TodoWrite to `completed`
+1. TodoWrite を `in_progress` に更新
+2. 設計原則に従いコード品質を改善する
+3. `/check --test` を実行し、**成功を維持する**（テストは変更しない）
+4. リファクタリングすべき点がなければ、その旨を明示して次に進む（変更をでっち上げない）
+5. TodoWrite を `completed` に更新
 
-**Design Principles Checklist**:
+**設計原則チェックリスト**:
 
-| Category | Check Items |
+| カテゴリ | チェック項目 |
 |----------|-------------|
-| SOLID | Single Responsibility, Dependency Inversion |
-| Testability | Dependency Injection, Pure Functions |
-| Structure | High Cohesion, Low Coupling, DRY |
-| Simplicity | YAGNI, KISS |
+| SOLID | 単一責任、依存性逆転 |
+| テスト容易性 | 依存性注入、純粋関数 |
+| 構造 | 高凝集・低結合、DRY |
+| シンプルさ | YAGNI、KISS |
 
 ---
 
-## [3/4] Phase Approval
+## [3/4] フェーズ承認
 
-After completing all RED/GREEN/REFACTOR tasks in phase:
+フェーズ内の RED/GREEN/REFACTOR タスクをすべて完了したら:
 
-### Step 1: Self Review
+### Step 1: セルフレビュー
 
-Run `/review --uncommitted --brief`:
+`/review --uncommitted --brief` を実行する:
 
 ```
 Review changed files.
 Report Critical/Warning issues only.
 ```
 
-**If issues found**:
-1. Fix issues
-2. Confirm success with `/check --test`
-3. Run self review again
-4. Repeat until no issues (max 3 rounds — if issues remain after 3 rounds,
-   report the remaining issues to the user and ask how to proceed)
+**問題が見つかった場合**:
+1. 問題を修正する
+2. `/check --test` で成功を確認する
+3. セルフレビューを再実行する
+4. 問題がなくなるまで繰り返す（最大3ラウンド — 3ラウンド経過後も問題が残る場合は、
+   残存する問題をユーザーに報告し対応を確認する）
 
-### Step 2: Quality Check
+### Step 2: 品質チェック
 
-Run `/check`:
+`/check` を実行する:
 
 ```bash
-# Run all checks (lint, format, build, test)
+# すべてのチェックを実行 (lint, format, build, test)
 ```
 
-**On failure**:
-1. Fix issues
-2. Run `/check` again
-3. Repeat until passed
+**失敗した場合**:
+1. 問題を修正する
+2. `/check` を再実行する
+3. パスするまで繰り返す
 
-### Step 3: Phase Completion
+### Step 3: フェーズ完了
 
-Ask for approval with AskUserQuestion:
+AskUserQuestion で承認を得る:
 
 ```
 Phase X completed.
@@ -160,9 +160,9 @@ Proceed to next phase?
 
 ---
 
-## [4/4] Completion
+## [4/4] 完了
 
-### Completion Summary
+### 完了サマリー
 
 ```
 ✓ Development completed
@@ -182,26 +182,26 @@ Quality checks:
 - build: PASSED
 ```
 
-### Next Action
+### 次のアクション
 
-Ask with AskUserQuestion:
-- **Commit**: Run `/commit`
-- **Done**: End development
+AskUserQuestion で確認する:
+- **Commit**: `/commit` を実行する
+- **Done**: 開発を終了する
 
 ---
 
-## TDD Absolute Rules
+## TDD の絶対原則
 
-1. **Never write code without tests**
-2. **Follow RED→GREEN→REFACTOR cycle**
-3. **Minimal implementation** - Only code to pass current test
-4. **Refactor only when GREEN**
-5. **Commit on RED** - Proves test is correct
+1. **テストなしでコードを書かない**
+2. **RED→GREEN→REFACTOR サイクルに従う**
+3. **最小限の実装** - 現在のテストをパスさせる分だけコードを書く
+4. **GREEN のときのみリファクタリングする**
+5. **RED の状態でコミットする** - テストが正しいことの証明になる
 
-## Anti-patterns
+## アンチパターン
 
-- Write tests "later"
-- Implement before writing tests
-- Refactor when RED
-- Implement multiple phases simultaneously
-- Skip quality checks
+- テストを「後で」書く
+- テストを書く前に実装する
+- RED の状態でリファクタリングする
+- 複数フェーズを同時に実装する
+- 品質チェックをスキップする

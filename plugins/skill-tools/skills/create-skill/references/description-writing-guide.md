@@ -1,25 +1,25 @@
-# Description Writing Guide
+# Description 記述ガイド
 
-## Formula
+## 公式
 
 ```
-[What it does] + [When to use it] + [Trigger phrases]
+[何をするか] + [いつ使うか] + [トリガーフレーズ]
 ```
 
-A good description has three parts:
+良い description には3つの要素がある。
 
-1. **WHAT**: One sentence explaining the skill's core function
-2. **WHEN**: Conditions or scenarios that should activate this skill
-3. **TRIGGERS**: Specific phrases users might say to invoke it
+1. **WHAT**: スキルの中核機能を説明する一文
+2. **WHEN**: このスキルを起動すべき条件やシナリオ
+3. **TRIGGERS**: ユーザーが呼び出す際に言いそうな具体的なフレーズ
 
-## Constraints
+## 制約
 
-- Maximum 1024 characters
-- No XML tags (`<`, `>`) in frontmatter
-- **Always write in third person** (e.g., "Processes files" not "I can help you" or "You can use this to")
-- Keep it scannable — Claude reads this to decide whether to invoke the skill from potentially 100+ available skills
+- 最大1024文字
+- frontmatter に XML タグ（`<`, `>`）を含めない
+- **常に三人称で書く**（例: "I can help you" や "You can use this to" ではなく "Processes files"）
+- スキャンしやすさを保つ — Claude はこれを読んで、100以上あるスキルの中から起動すべきか判断する
 
-## Good Examples
+## 良い例
 
 ```yaml
 description: >-
@@ -35,26 +35,26 @@ description: >-
   or "track this problem".
 ```
 
-## Bad Examples
+## 悪い例
 
 ```yaml
-# Too vague — no WHEN or triggers
+# 曖昧すぎる — WHEN もトリガーもない
 description: Helps with code
 
-# Too long — buries the key info
+# 長すぎる — 重要な情報が埋もれる
 description: >-
   This skill is designed to help users who want to perform code reviews.
   It can handle many different types of reviews including security reviews,
   performance reviews, and general code quality reviews. Users can invoke
   this skill whenever they need a review done on their code changes...
 
-# Contains XML — will break frontmatter parsing
+# XML を含む — frontmatter のパースが壊れる
 description: Use <review> tags to trigger this skill
 ```
 
-## Tips
+## コツ
 
-- Front-load the most important information
-- Use concrete trigger phrases that match natural language
-- Test: if you read only the description, would you know exactly when to use this skill?
-- Include both formal ("generate a code review") and casual ("check my code") triggers
+- 最も重要な情報を先頭に置く
+- 自然言語に合う具体的なトリガーフレーズを使う
+- テスト: description だけを読んで、いつこのスキルを使うべきか正確にわかるか？
+- フォーマルな言い方（"generate a code review"）とカジュアルな言い方（"check my code"）の両方を含める

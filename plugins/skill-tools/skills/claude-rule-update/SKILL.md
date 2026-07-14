@@ -3,18 +3,19 @@ name: claude-rule-update
 allowed-tools: Read, Edit
 argument-hint: "[new rule or convention]"
 description: >-
-  Updates CLAUDE.md based on conversation learnings and new patterns.
-  Use when updating project rules, adding conventions, or when the user
-  says "update rules", "update CLAUDE.md", "add convention", "ルール追加", or "規約を更新".
+  会話から得た学びや新しいパターンをもとに CLAUDE.md を更新する。
+  プロジェクトのルール更新、規約の追加、またはユーザーが
+  "update rules", "update CLAUDE.md", "add convention", "ルール追加", "規約を更新"
+  と言った場合に使う。
 ---
 
-# Update CLAUDE.md
+# CLAUDE.md の更新
 
-## Context
+## コンテキスト
 
-- Current CLAUDE.md: @.claude/CLAUDE.md
+- 現在の CLAUDE.md: @.claude/CLAUDE.md
 
-## Your task
+## タスク
 
 会話から得られた新しいルール・規約・ワークフローを CLAUDE.md に反映する。
 

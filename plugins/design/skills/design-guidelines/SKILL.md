@@ -1,18 +1,18 @@
 ---
 name: design-guidelines
 description: >-
-  Analyze a screenshot or image file and generate a structured design guideline
-  document in Markdown. Extracts tone, color palette, typography, spacing,
-  layout patterns, and decoration rules with design intent explanations.
+  スクリーンショットや画像ファイルを解析し、構造化されたデザインガイドライン
+  文書をMarkdown形式で生成する。トーン、カラーパレット、タイポグラフィ、
+  余白、レイアウトパターン、装飾ルールをデザイン意図の説明とともに抽出する。
   Use when user says "design guidelines", "extract design tokens",
   "analyze this design", "generate style guide", or "デザインガイドライン".
 allowed-tools: Read, Glob, Grep
 argument-hint: <image-file-path>
 ---
 
-## Your Task
+## あなたのタスク
 
-You are a senior UI/UX design consultant. Analyze the provided screenshot or image file and produce a comprehensive design guideline document in Markdown.
+あなたはシニアUI/UXデザインコンサルタントである。提供されたスクリーンショットまたは画像ファイルを分析し、包括的なデザインガイドライン文書をMarkdown形式で作成する。
 
 ## Steps
 
@@ -20,7 +20,7 @@ You are a senior UI/UX design consultant. Analyze the provided screenshot or ima
 2. **視覚分析**: 画像から以下の6項目を抽出・分析する
 3. **ガイドライン生成**: 分析結果を構造化されたMarkdownとして出力する
 
-## Output Format
+## 出力フォーマット
 
 以下の構造でMarkdownを出力すること。各項目には必ず「なぜそうするか（Intent）」を添える。
 
@@ -92,7 +92,7 @@ You are a senior UI/UX design consultant. Analyze the provided screenshot or ima
 - [意図的に避けている装飾とその理由]
 ```
 
-## Analysis Guidelines
+## 分析ガイドライン
 
 - 画像から読み取れる情報に基づいて分析する。推測が必要な場合は「推定」と明記する
 - HEXコードは画像から可能な限り正確に抽出する。完全に正確でなくても近似値を示す
@@ -100,7 +100,7 @@ You are a senior UI/UX design consultant. Analyze the provided screenshot or ima
 - 「なぜそうするか」はデザイン原則（近接・整列・反復・コントラスト等）に基づいて説明する
 - AIが再現可能なレベルの具体性で記述する
 
-## Error Handling
+## エラーハンドリング
 
 - 画像ファイルが見つからない場合: ユーザーにパスを確認する
 - 低解像度で詳細が読み取れない場合: 読み取れる範囲で分析し、不確実な部分を明記する

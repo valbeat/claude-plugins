@@ -4,25 +4,25 @@ allowed-tools: Bash(git:*), Bash(gh:*)
 disable-model-invocation: true
 argument-hint: "[<pr-number>]"
 description: >-
-  Updates GitHub PR title and description based on current branch changes.
-  Use when updating PRs, refreshing PR descriptions, or when the user says
-  "update PR", "refresh PR", or "update PR description".
+  現在のブランチの変更内容を基に、GitHub PRのタイトルと説明を更新する。
+  PRを更新する時、PR説明文を最新化する時、あるいはユーザーが
+  "update PR"、"refresh PR"、"update PR description" と言った場合に使う。
 ---
 
-# Update PR
+# PR更新
 
 ## Context
 
 - Current repository: !`gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || echo "Not a GitHub repository"`
 - Current branch: !`git branch --show-current`
 - Recent commits: !`git log --oneline -5`
-- Conventional commit format: Follow project standards
+- Conventional commit format: プロジェクトの規約に従う
 
-## Your task
+## タスク
 
 GitHub PRのタイトルと説明を、ベースブランチとの差分やコミットメッセージを基に自動更新する。変更内容を分析して適切なPR説明を生成する。
 
-## Usage
+## 使い方
 ```
 Update PR #<pr-number>
 ```
@@ -163,7 +163,7 @@ EOF
 - **Breaking Changes**: 破壊的変更がある場合は明記
 - **Testing**: テスト内容や結果
 
-## Notes
+## 注意事項
 
 - PRの作成者でない場合、編集権限がない可能性がある
 - **既存本文の手動記載（チェックリストの状態、補足、画像等）は必ず新しい本文に引き継ぐ**

@@ -1,35 +1,35 @@
-# Security Restrictions
+# セキュリティ上の制約
 
-## Frontmatter Safety
+## Frontmatter の安全性
 
-- **No XML angle brackets** (`<`, `>`) in any frontmatter field — they break YAML parsing
-- Use `>-` for multi-line strings in YAML to avoid injection risks
-- Frontmatter is rendered into the system prompt — treat it as security-sensitive
+- どの frontmatter フィールドにも **XML の山括弧**（`<`, `>`）を含めない — YAML のパースが壊れる
+- 複数行文字列には YAML の `>-` を使い、インジェクションのリスクを避ける
+- frontmatter はシステムプロンプトに展開される — セキュリティ上重要な情報として扱うこと
 
-## Naming Restrictions
+## 命名制限
 
-- Skill names must **not** contain "claude" or "anthropic" (reserved names)
-- Use kebab-case for folder names: `my-skill`, not `mySkill` or `my_skill`
+- スキル名に "claude" や "anthropic" を含めては**いけない**（予約名）
+- フォルダ名は kebab-case を使う: `mySkill` や `my_skill` ではなく `my-skill`
 
-## Prompt Injection Risk
+## プロンプトインジェクションのリスク
 
-The `description` field appears in Claude's system prompt. A malicious description could attempt to override Claude's behavior.
+`description` フィールドは Claude のシステムプロンプトに現れる。悪意ある description は Claude の挙動を上書きしようと試みる可能性がある。
 
-**Mitigations**:
-- Keep descriptions factual and focused on WHAT/WHEN/triggers
-- Do not include instructions or behavioral directives in the description
-- All behavioral instructions belong in the SKILL.md body, not frontmatter
+**対策**:
+- description は事実に基づき、WHAT/WHEN/トリガーに絞った内容にする
+- description に指示や挙動を指定するディレクティブを含めない
+- 挙動に関する指示はすべて frontmatter ではなく SKILL.md 本文に書く
 
-## Tool Permissions
+## ツール権限
 
-- Use `allowed-tools` to restrict which tools the skill can access
-- Follow the principle of least privilege — only grant tools the skill actually needs
-- Avoid granting `Bash(*)` (unrestricted shell) unless absolutely necessary
-- Prefer specific patterns: `Bash(git add:*)`, `Bash(npm test:*)`
+- `allowed-tools` を使って、スキルがアクセスできるツールを制限する
+- 最小権限の原則に従う — スキルが実際に必要とするツールのみを許可する
+- どうしても必要な場合を除き、`Bash(*)`（無制限のシェル実行）は避ける
+- 特定のパターンを優先する: `Bash(git add:*)`, `Bash(npm test:*)`
 
-## Sensitive Data
+## 機密データ
 
-- Never hardcode secrets, API keys, or credentials in SKILL.md
-- Use environment variables or external secret managers
-- Be cautious with `!command` — output is included in the prompt context
-- Avoid `!cat ~/.env` or similar commands that might expose secrets
+- シークレット、API キー、認証情報を SKILL.md にハードコードしない
+- 環境変数や外部のシークレットマネージャーを使う
+- `!command` の使用には注意する — その出力はプロンプトのコンテキストに含まれる
+- `!cat ~/.env` のような、シークレットを露出しかねないコマンドは避ける

@@ -1,104 +1,104 @@
-# Skill Templates
+# スキルテンプレート
 
-## Minimal Template
+## 最小構成テンプレート
 
 ```markdown
 ---
 name: skill-name
 description: >-
-  [What it does]. Use when user says "[trigger 1]", "[trigger 2]",
-  or "[trigger 3]".
+  [何をするか]。ユーザーが "[トリガー1]", "[トリガー2]",
+  "[トリガー3]" と言った場合に使う。
 allowed-tools: Read, Glob, Grep
 ---
 
 ## Your Task
 
-[Clear description of what this skill does]
+[このスキルが何をするかの明確な説明]
 
 ## Steps
 
-1. [First step]
-2. [Second step]
-3. [Third step]
+1. [最初のステップ]
+2. [次のステップ]
+3. [3番目のステップ]
 
 ## Example
 
-User: "[example input]"
-Result: [expected output description]
+User: "[入力例]"
+Result: [期待される出力の説明]
 
 ## Error Handling
 
-- If [condition], then [recovery action]
+- [条件]の場合は、[回復のためのアクション]を行う
 ```
 
-## Template with References
+## 参照ファイル付きテンプレート
 
 ```markdown
 ---
 name: skill-name
 description: >-
-  [What it does]. [When to use it]. Use when user says "[trigger 1]",
-  "[trigger 2]", or "[trigger 3]".
+  [何をするか]。[いつ使うか]。ユーザーが "[トリガー1]",
+  "[トリガー2]", "[トリガー3]" と言った場合に使う。
 allowed-tools: Read, Bash(specific-command:*), Glob, Grep
-argument-hint: [description of expected arguments]
+argument-hint: [想定される引数の説明]
 ---
 
 ## Context
 
-- Relevant state: !`command-to-check-state`
-- Existing resources: !`ls relevant/directory/`
+- 関連する状態: !`command-to-check-state`
+- 既存のリソース: !`ls relevant/directory/`
 
 ## Your Task
 
-[Clear description of what this skill does]
+[このスキルが何をするかの明確な説明]
 
-For detailed guidance on [topic], see @references/topic-guide.md
+[トピック]の詳細なガイダンスは @references/topic-guide.md を参照
 
 ## Steps
 
-1. **[Phase name]**: [description]
-   - Detail A
-   - Detail B
+1. **[フェーズ名]**: [説明]
+   - 詳細A
+   - 詳細B
 
-2. **[Phase name]**: [description]
-   - See @references/detailed-guide.md for specifics
+2. **[フェーズ名]**: [説明]
+   - 詳細は @references/detailed-guide.md を参照
 
-3. **[Phase name]**: [description]
+3. **[フェーズ名]**: [説明]
 
 ## Example
 
 User: "/skill-name some-argument"
 Result:
-- [output 1]
-- [output 2]
+- [出力1]
+- [出力2]
 
 ## Error Handling
 
-- If [common error], then [recovery]
-- If [edge case], then [fallback]
+- [よくあるエラー]の場合は、[回復方法]
+- [エッジケース]の場合は、[フォールバック]
 
 ## Success Criteria
 
-- [ ] [Measurable outcome 1]
-- [ ] [Measurable outcome 2]
+- [ ] [測定可能な成果1]
+- [ ] [測定可能な成果2]
 ```
 
-## Frontmatter Field Reference
+## Frontmatter フィールド一覧
 
-### Required
+### 必須
 
-| Field | Description |
+| フィールド | 説明 |
 |-------|-------------|
-| `name` | Skill identifier, must match folder name (kebab-case) |
-| `description` | WHAT + WHEN + triggers (max 1024 chars, no XML) |
+| `name` | スキル識別子。フォルダ名と一致させる（kebab-case） |
+| `description` | WHAT + WHEN + トリガー（最大1024文字、XML不可） |
 
-### Optional
+### 任意
 
-| Field | Description |
+| フィールド | 説明 |
 |-------|-------------|
-| `allowed-tools` | Comma-separated list of permitted tools |
-| `argument-hint` | Describes expected arguments (shown in help) |
-| `model` | Preferred model: `sonnet`, `opus`, or `haiku` |
-| `user-invocable` | `false` to make skill only callable by Claude |
-| `disable-model-invocation` | `true` to make skill only callable by user |
-| `context` | `fork` to run in isolated subagent context |
+| `allowed-tools` | 許可するツールのカンマ区切りリスト |
+| `argument-hint` | 想定される引数の説明（ヘルプに表示される） |
+| `model` | 希望するモデル: `sonnet`, `opus`, `haiku` のいずれか |
+| `user-invocable` | `false` にするとユーザーからは呼び出せず Claude のみが呼び出せる |
+| `disable-model-invocation` | `true` にするとユーザーのみが呼び出せる |
+| `context` | `fork` にすると独立したサブエージェントのコンテキストで実行される |

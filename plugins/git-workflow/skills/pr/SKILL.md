@@ -4,12 +4,12 @@ allowed-tools: Bash(git:*), Bash(gh:*)
 disable-model-invocation: true
 argument-hint: "[--base <branch>]"
 description: >-
-  Creates a GitHub pull request from the current branch with auto-generated
-  title and description. Use when creating PRs, or when the user says
-  "create PR", "open PR", or "make a pull request".
+  現在のブランチから、自動生成したタイトルと説明文で GitHub プルリクエストを
+  作成する。PRを作成する時、またはユーザーが "create PR"、"open PR"、
+  "make a pull request" と言った場合に使う。
 ---
 
-# Create PR
+# PR作成
 
 ## Context
 
@@ -17,18 +17,18 @@ description: >-
 - Current branch: !`git branch --show-current`
 - Git status: !`git status --porcelain`
 - Recent commits: !`git log --oneline -5`
-- Git workflow: Follow CLAUDE.md conventions for PR creation
+- Git workflow: PR作成は CLAUDE.md の規約に従う
 
-## Your task
+## タスク
 
 現在のブランチから、差分とコミットメッセージを基にPRを自動作成する。**まず、プロジェクトのPRテンプレートが存在するかを確認し、存在する場合はそのフォーマットに従うことを最優先とする。**テンプレートがない場合は、変更内容を分析し、適切なタイトルと説明を生成してドラフトPRを作成する。
 
-## Usage
+## 使い方
 ```
 Create PR
 ```
 
-## Arguments (Optional)
+## 引数（任意）
 - `--base <branch>`: ベースブランチを指定 (デフォルト: main/master)
 - `--draft`: ドラフトPRとして作成
 - `--no-draft`: ドラフトではなく通常のPRとして作成
@@ -208,7 +208,7 @@ EOF
 3. **ベースブランチが古い**: fetchして最新化
 4. **コンフリクト**: 警告を表示してユーザーに解決を促す
 
-## Notes
+## 注意事項
 
 - **最優先事項**: プロジェクトのPRテンプレートが存在する場合は、そのフォーマットを厳密に踏襲する
 - 既存のマージ済みPRから学習し、プロジェクト固有のPRスタイルを把握する

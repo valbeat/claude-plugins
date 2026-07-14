@@ -1,126 +1,120 @@
 ---
 name: create-skill
 description: >-
-  Interactive guide for creating new Claude skills. Walks the user through
-  use case definition, frontmatter generation, instruction writing, and
-  validation. Use when user says "create a skill", "build a new skill",
-  "help me make a skill", "new skill", or "add a skill".
+  新しい Claude スキルを作成するための対話型ガイド。ユースケースの定義、
+  frontmatter の生成、指示文の作成、検証まで順を追って進める。ユーザーが
+  "create a skill", "build a new skill", "help me make a skill", "new skill",
+  "add a skill" と言った場合に使う。
 allowed-tools: Read, Bash(ls:*), Glob, Grep
 ---
 
 ## Context
 
-- Current project skills: !`ls -la .claude/skills/ 2>/dev/null || echo "No project skills"`
-- User skills available: !`ls -la ~/.claude/skills/ 2>/dev/null || echo "No user skills"`
-- Project guidelines: !`head -50 .claude/CLAUDE.md 2>/dev/null || echo "No CLAUDE.md found"`
+- 現在のプロジェクトスキル: !`ls -la .claude/skills/ 2>/dev/null || echo "No project skills"`
+- 利用可能なユーザースキル: !`ls -la ~/.claude/skills/ 2>/dev/null || echo "No user skills"`
+- プロジェクトのガイドライン: !`head -50 .claude/CLAUDE.md 2>/dev/null || echo "No CLAUDE.md found"`
 
-## Your Task
+## タスク
 
-You are a skill creation specialist. Guide the user through creating a well-structured Claude skill step by step. Always complete each step before moving to the next.
+スキル作成の専門家として、ユーザーが構造化された Claude スキルを作成できるよう、ステップごとに案内する。各ステップを完了させてから次に進むこと。
 
-## Step 1: Research Existing Skills
+## Step 1: 既存スキルの調査
 
-Before creating anything, survey what already exists:
+何かを作成する前に、既にあるものを調査する。
 
-1. List skills in `.claude/skills/` and `~/.claude/skills/`
-2. Read any similar skills to understand established patterns
-3. Note conventions: tool usage, argument handling, structure
+1. `.claude/skills/` と `~/.claude/skills/` のスキルを一覧する
+2. 類似のスキルを読み、確立されたパターンを把握する
+3. ツールの使い方、引数の扱い、構造といった慣習をメモする
 
-## Step 2: Understand Purpose
+## Step 2: 目的の把握
 
-Ask the user:
-1. What problem does this skill solve?
-2. Who will use it and when?
-3. What is the expected output?
+ユーザーに以下を尋ねる。
+1. このスキルはどんな問題を解決するか？
+2. 誰が、いつ使うか？
+3. 期待される出力は何か？
 
-Then determine:
-- **Approach**: Problem-first (start from user need) or Tool-first (start from available tool/MCP)
-- **Category**: Document & Asset Creation / Workflow Automation / MCP Enhancement
-- **Pattern**: Sequential workflow / Multi-MCP coordination / Iterative refinement / Context-aware tool selection / Domain-specific intelligence
-- **Location**: Project skill (`.claude/skills/`) or User skill (`~/.claude/skills/`)
+その上で以下を決定する。
+- **アプローチ**: Problem-first（ユーザーのニーズから出発）か Tool-first（利用可能なツール/MCPから出発）か
+- **カテゴリ**: Document & Asset Creation / Workflow Automation / MCP Enhancement
+- **パターン**: Sequential workflow / Multi-MCP coordination / Iterative refinement / Context-aware tool selection / Domain-specific intelligence
+- **配置場所**: プロジェクトスキル（`.claude/skills/`）かユーザースキル（`~/.claude/skills/`）か
 
-See @references/skill-categories-and-patterns.md for detailed guidance.
+詳細は @references/skill-categories-and-patterns.md を参照。
 
-## Step 3: Write Description
+## Step 3: description の記述
 
-Write the description using the WHAT + WHEN + triggers formula:
+WHAT + WHEN + トリガーの公式で description を書く。
 
 ```
-[What it does] + [When to use it] + [Trigger phrases]
+[何をするか] + [いつ使うか] + [トリガーフレーズ]
 ```
 
-Requirements:
-- **Always third person** ("Processes files" not "I can help you")
-- Under 1024 characters
-- No XML angle brackets
-- Include 3-5 natural trigger phrases
-- Be specific enough for Claude to select from 100+ skills
+要件:
+- **常に三人称で書く**（"I can help you" ではなく "Processes files" のように）
+- 1024文字以内
+- XML の山括弧を含めない
+- 自然なトリガーフレーズを3〜5個含める
+- 100以上のスキルの中から Claude が選べるだけの具体性を持たせる
 
-See @references/description-writing-guide.md for examples and best practices.
+例やベストプラクティスは @references/description-writing-guide.md を参照。
 
-## Step 4: Generate the Skill
+## Step 4: スキルの生成
 
-Create the skill directory and SKILL.md using the appropriate template.
+適切なテンプレートを使ってスキルディレクトリと SKILL.md を作成する。
 
-Required frontmatter fields:
-- `name`: matches folder name (kebab-case, max 64 chars, no reserved words)
-- `description`: from Step 3
+必須の frontmatter フィールド:
+- `name`: フォルダ名と一致させる（kebab-case、最大64文字、予約語不可）
+- `description`: Step 3 で作成したもの
 
-Optional fields: `allowed-tools`, `argument-hint`, `model`, `user-invocable`, `disable-model-invocation`, `context`
+任意フィールド: `allowed-tools`, `argument-hint`, `model`, `user-invocable`, `disable-model-invocation`, `context`
 
-### Authoring Principles
+### 作成の原則
 
-- **Concise is key**: Only include context Claude doesn't already know. Challenge each paragraph: "Does Claude need this?"
-- **SKILL.md under 500 lines**: Use progressive disclosure — split into reference files loaded on demand
-- **One level deep**: All reference files link directly from SKILL.md (no nested chains)
-- **Appropriate freedom**: Match specificity to fragility (exact scripts for fragile ops, general guidance for flexible tasks)
-- **Consistent terminology**: Choose one term and use it throughout
-- **Model-robust**: Write skills so quality holds even on smaller models (Sonnet/Haiku):
-  - Replace vague judgment ("generate appropriately") with decision tables, priority
-    orders, and concrete rules
-  - Embed FULL prompt templates for any sub-agent the skill spawns — never a
-    one-line description the orchestrator must expand
-  - For destructive operations (editing PR/issue bodies, overwriting files):
-    spell out a save → modify → verify → apply procedure; pass bodies via
-    `--body-file` / heredoc, never inline quoting
-  - Give every loop an iteration limit and an escalation path ("after 3 failures,
-    report to user")
-  - End multi-step workflows with a completion checklist of command-verifiable
-    conditions
-  - Forbid placeholders (`[TBD]`) in final outputs explicitly
+- **簡潔さが要**: Claude がまだ知らない文脈だけを含める。各段落について「Claude にこれが本当に必要か？」を問う
+- **SKILL.md は500行以内**: プログレッシブディスクロージャーを使い、必要に応じて読み込む参照ファイルに分割する
+- **参照は1階層まで**: すべての参照ファイルは SKILL.md から直接リンクする（ネストした参照チェーンは作らない）
+- **適切な自由度**: 内容の壊れやすさに応じて具体性を変える（壊れやすい操作には正確なスクリプトを、柔軟なタスクには一般的なガイダンスを）
+- **用語の一貫性**: 用語を1つに統一し、一貫して使う
+- **モデルにロバストであること**: 小さいモデル（Sonnet/Haiku）でも品質が落ちないようにスキルを書く
+  - 曖昧な判断（「適切に生成する」など）を、判断テーブル・優先順位・具体的なルールに置き換える
+  - スキルが起動するサブエージェントには、オーケストレーターが展開する必要がある1行の説明ではなく、完全なプロンプトテンプレートを埋め込む
+  - 破壊的な操作（PR/issue本文の編集、ファイルの上書きなど）では、save → modify → verify → apply の手順を明記する。本文の受け渡しはインラインでの引用ではなく `--body-file` やヒアドキュメントを使う
+  - すべてのループに反復回数の上限とエスカレーション経路（「3回失敗したらユーザーに報告する」など）を設ける
+  - 複数ステップのワークフローの最後には、コマンドで検証可能な完了チェックリストを置く
+  - 最終出力にプレースホルダー（`[TBD]`）を残すことを明示的に禁止する
 
-See @references/skill-template.md for templates and field reference.
+テンプレートとフィールド一覧は @references/skill-template.md を参照。
 
-## Step 5: Define Success Criteria
+## Step 5: 成功基準の定義
 
-Define measurable success criteria:
-- Trigger accuracy: does the skill activate on the right phrases?
-- Workflow completion: does it produce the expected output?
-- Error handling: does it recover gracefully from common failures?
+測定可能な成功基準を定義する。
+- トリガー精度: 適切なフレーズでスキルが起動するか？
+- ワークフローの完遂: 期待される出力を生成するか？
+- エラー処理: よくある失敗から適切に回復できるか？
 
-## Step 6: Validate
+## Step 6: 検証
 
-Run through the validation checklist before considering the skill complete.
+スキルが完成したとみなす前に、検証チェックリストを一通り確認する。
 
-See @references/validation-checklist.md for the full checklist.
+チェックリスト全文は @references/validation-checklist.md を参照。
 
-If issues arise, consult @references/troubleshooting.md.
+問題が発生した場合は @references/troubleshooting.md を参照。
 
-For security considerations, see @references/security-restrictions.md.
+セキュリティ上の考慮事項は @references/security-restrictions.md を参照。
 
-## Example Session
+## セッション例
 
 User: "I need a skill to run database migrations"
 
-**Step 1** — Check existing skills for similar patterns.
+**Step 1** — 類似パターンがないか既存スキルを確認する。
 
-**Step 2** — Questions:
-- What database system? What migration tool?
-- Should it handle rollbacks? Multiple environments?
+**Step 2** — 質問:
+- どのデータベースシステムか？どの migration ツールか？
+- ロールバックに対応する必要があるか？複数環境か？
 
-Classification: Workflow Automation, Sequential workflow pattern, Project skill.
+分類: Workflow Automation、Sequential workflow パターン、プロジェクトスキル。
 
-**Step 3** — Description:
+**Step 3** — description:
 ```yaml
 description: >-
   Execute database migrations with environment selection, dry-run support,
@@ -128,17 +122,17 @@ description: >-
   "migrate database", "rollback migration", or "check pending migrations".
 ```
 
-**Step 4** — Generate `.claude/skills/run-migrations/SKILL.md` with proper frontmatter and steps.
+**Step 4** — 適切な frontmatter とステップを含む `.claude/skills/run-migrations/SKILL.md` を生成する。
 
-**Step 5** — Success criteria: migrations run correctly, rollback works, dry-run shows changes without executing.
+**Step 5** — 成功基準: migration が正しく実行される、ロールバックが機能する、dry-run が実行せずに変更内容を表示する。
 
-**Step 6** — Walk through validation checklist.
+**Step 6** — 検証チェックリストを一通り確認する。
 
-## Output Summary
+## 出力サマリー
 
-After completing all steps, summarize:
+すべてのステップ完了後、以下をまとめる。
 
-1. **Skill Created**: location, name, category, pattern
-2. **Resources Created**: supporting files, references
-3. **Usage**: `/skill-name` with example invocation
-4. **Next Steps**: test the skill in a real conversation, iterate based on feedback
+1. **作成したスキル**: 配置場所、名前、カテゴリ、パターン
+2. **作成したリソース**: 補助ファイル、参照ファイル
+3. **使い方**: `/skill-name` と呼び出し例
+4. **次のステップ**: 実際の会話でスキルをテストし、フィードバックをもとに改善する

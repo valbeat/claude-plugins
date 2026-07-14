@@ -1,81 +1,81 @@
 ---
 name: interview
 description: >-
-  Reads DESIGN.md and conducts deep-dive interviews on technical implementation,
-  concerns, and trade-offs. Use when exploring requirements, or when the user
-  says "interview", "deep-dive", or "discuss design".
+  DESIGN.md を読み込み、技術的な実装・懸念点・トレードオフについて深掘り
+  インタビューを行う。要件を掘り下げるとき、またはユーザーが
+  "interview", "deep-dive", "discuss design" と発言したときに使う。
 argument-hint: "[DESIGN.md path]"
 ---
 
-# /interview - Deep-dive Interview Command
+# /interview - 深掘りインタビューコマンド
 
-## Overview
+## 概要
 
-Read DESIGN.md and conduct deep-dive interview with user.
-After interview completion, write collected specifications to DESIGN.md.
+DESIGN.md を読み込み、ユーザーと深掘りインタビューを行う。
+インタビュー完了後、収集した仕様を DESIGN.md に書き込む。
 
-## Usage
+## 使い方
 
 ```bash
-/interview                    # Default: docs/DESIGN.md
-/interview path/to/DESIGN.md  # Custom path
+/interview                    # デフォルト: docs/DESIGN.md
+/interview path/to/DESIGN.md  # パスを指定
 ```
 
 ---
 
-## Execution Steps
+## 実行手順
 
-### 1. Read DESIGN.md
+### 1. DESIGN.md の読み込み
 
-- If `$ARGUMENTS` specified: Use that path
-- Otherwise: Use `docs/DESIGN.md`
+- `$ARGUMENTS` が指定されている場合: そのパスを使用
+- それ以外: `docs/DESIGN.md` を使用
 
-Read file with Read tool and understand content.
+Read ツールでファイルを読み、内容を把握する。
 
-### 2. Conduct Interview
+### 2. インタビューの実施
 
-Based on DESIGN.md content, conduct deep-dive interview using AskUserQuestion.
+DESIGN.md の内容に基づき、AskUserQuestion を用いて深掘りインタビューを行う。
 
-**Interview perspectives**:
-- Technical implementation details
-- UI/UX considerations
-- Concerns and risks
-- Trade-off decisions
-- Edge case handling
-- Error handling
-- Performance requirements
-- Security considerations
+**インタビューの観点**:
+- 技術的な実装詳細
+- UI/UX に関する考慮事項
+- 懸念点とリスク
+- トレードオフの判断
+- エッジケースの扱い
+- エラーハンドリング
+- パフォーマンス要件
+- セキュリティに関する考慮事項
 
-**Important rules**:
-- **Don't ask obvious questions** - Skip what's already in DESIGN.md or clearly answered
-- **Never re-ask** - Before each round, list topics already covered (in DESIGN.md or
-  earlier answers) and exclude them
-- **Deep-dive** - Explore implicit assumptions and undecided matters, not surface-level confirmations
-- **Concrete options** - Every question must offer 2-4 realistic options with the
-  trade-off stated in each description (the user can always pick "Other")
-- **Batch size** - 1-2 questions per AskUserQuestion call (max 4)
-- **Continue** - Keep interviewing until user says "done" or sufficient information gathered
+**重要なルール**:
+- **自明な質問はしない** - DESIGN.md に既に記載済み、または明らかに回答済みの事項はスキップする
+- **同じ質問を繰り返さない** - 各ラウンドの前に、既にカバーした話題（DESIGN.md や過去の
+  回答に含まれるもの）を洗い出し、除外する
+- **深掘りする** - 表面的な確認ではなく、暗黙の前提や未決事項を掘り下げる
+- **具体的な選択肢** - すべての質問は、各説明にトレードオフを明記した2〜4個の現実的な
+  選択肢を提示する（ユーザーは常に「Other」を選べる）
+- **バッチサイズ** - AskUserQuestion 1回あたり1〜2問（最大4問）
+- **継続** - ユーザーが「done」と言うか、十分な情報が集まるまでインタビューを続ける
 
-### Interview Flow
+### インタビューの流れ
 
-1. Review DESIGN.md content
-2. Identify unclear points or areas needing detail
-3. Ask with AskUserQuestion (1-2 questions at a time)
-4. Record answers
-5. Repeat if more questions
-6. End when sufficient information gathered
+1. DESIGN.md の内容を確認する
+2. 不明瞭な点や詳細が必要な箇所を特定する
+3. AskUserQuestion で質問する（一度に1〜2問）
+4. 回答を記録する
+5. さらに質問が必要な場合は繰り返す
+6. 十分な情報が集まったら終了する
 
-### Question Example
+### 質問例
 
 ```javascript
 AskUserQuestion({
   questions: [
     {
-      question: "[Specific question content]",
+      question: "[具体的な質問内容]",
       header: "Technical Details",
       options: [
-        { label: "Option A", description: "Description A" },
-        { label: "Option B", description: "Description B" }
+        { label: "選択肢A", description: "説明A" },
+        { label: "選択肢B", description: "説明B" }
       ],
       multiSelect: false
     }
@@ -83,11 +83,11 @@ AskUserQuestion({
 })
 ```
 
-### 3. Write Specifications
+### 3. 仕様の書き込み
 
-After interview completion, append or update collected information to DESIGN.md.
+インタビュー完了後、収集した情報を DESIGN.md に追記・更新する。
 
-Sections to append:
+追記するセクション:
 
 ```markdown
 ## Specifications from Interview
@@ -107,14 +107,14 @@ Sections to append:
 
 ---
 
-## Exit Conditions
+## 終了条件
 
-Exit when any of the following:
-- User responds with "done", "complete", "OK", etc.
-- Sufficient information gathered, no more questions
-- Received "nothing specific" response 3 times consecutively
+以下のいずれかに該当したら終了する:
+- ユーザーが「done」「complete」「OK」などと回答した
+- 十分な情報が集まり、これ以上質問がない
+- 「特にありません」という回答を3回連続で受け取った
 
-Exit message:
+終了メッセージ:
 
 ```
 ✓ Interview completed

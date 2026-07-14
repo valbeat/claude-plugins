@@ -1,68 +1,68 @@
-# Validation Checklist
+# 検証チェックリスト
 
-## Pre-Development
+## 開発前
 
-- [ ] Defined 2-3 concrete use cases with expected inputs and outputs
-- [ ] Identified which tools the skill needs (`allowed-tools`)
-- [ ] Determined skill location (project `.claude/skills/` vs user `~/.claude/skills/`)
-- [ ] Checked for existing similar skills to avoid duplication
-- [ ] Classified into category (Document & Asset / Workflow Automation / MCP Enhancement)
+- [ ] 期待される入力と出力を伴う具体的なユースケースを2〜3個定義した
+- [ ] スキルが必要とするツール（`allowed-tools`）を特定した
+- [ ] スキルの配置場所（プロジェクト `.claude/skills/` かユーザー `~/.claude/skills/` か）を決定した
+- [ ] 重複を避けるため、既存の類似スキルを確認した
+- [ ] カテゴリ（Document & Asset / Workflow Automation / MCP Enhancement）に分類した
 
-## During Development
+## 開発中
 
 ### Frontmatter
 
-- [ ] Folder name is kebab-case (e.g., `create-skill`, not `createSkill`)
-- [ ] Main file is named exactly `SKILL.md` (case-sensitive)
-- [ ] Frontmatter delimiters are `---` on their own lines
-- [ ] `name` field is present and matches folder name
-- [ ] `description` follows WHAT + WHEN + triggers formula
-- [ ] `description` is under 1024 characters
-- [ ] No XML angle brackets (`<`, `>`) in frontmatter values
-- [ ] `allowed-tools` lists only necessary tools (principle of least privilege)
+- [ ] フォルダ名が kebab-case になっている（例: `createSkill` ではなく `create-skill`）
+- [ ] メインファイル名が正確に `SKILL.md`（大文字小文字を区別する）
+- [ ] frontmatter の区切り記号 `---` がそれぞれ独立した行にある
+- [ ] `name` フィールドが存在し、フォルダ名と一致している
+- [ ] `description` が WHAT + WHEN + トリガーの公式に従っている
+- [ ] `description` が1024文字以内
+- [ ] frontmatter の値に XML の山括弧（`<`, `>`）が含まれていない
+- [ ] `allowed-tools` に必要なツールのみが列挙されている（最小権限の原則）
 
-### Content
+### 内容
 
-- [ ] Instructions are clear and actionable (no vague guidance)
-- [ ] Uses Markdown headers, not XML tags, for structure
-- [ ] Includes at least one concrete example
-- [ ] Has error handling guidance for common failure modes
-- [ ] References are linked with `@references/filename.md` syntax
-- [ ] No orphaned closing tags or broken markup
-- [ ] SKILL.md body is under 500 lines (use progressive disclosure for larger content)
-- [ ] File references are one level deep from SKILL.md (no nested reference chains)
-- [ ] No time-sensitive information (or in "old patterns" section)
-- [ ] Consistent terminology throughout (e.g., always "API endpoint", not mix of "URL"/"route")
-- [ ] Only includes context Claude doesn't already know (concise is key)
+- [ ] 指示が明確で実行可能である（曖昧なガイダンスがない）
+- [ ] 構造化に XML タグではなく Markdown の見出しを使っている
+- [ ] 具体例が少なくとも1つ含まれている
+- [ ] よくある失敗モードへのエラー処理ガイダンスがある
+- [ ] 参照ファイルは `@references/filename.md` の記法でリンクされている
+- [ ] 孤立した閉じタグや壊れたマークアップがない
+- [ ] SKILL.md 本文が500行以内（それ以上の内容はプログレッシブディスクロージャーを使う）
+- [ ] ファイル参照は SKILL.md から1階層のみ（ネストした参照チェーンがない）
+- [ ] 時間依存の情報が含まれていない（含める場合は「old patterns」セクションに置く）
+- [ ] 用語が一貫している（例: 「URL」と「route」を混在させず常に「API endpoint」を使うなど）
+- [ ] Claude がまだ知らない文脈のみを含めている（簡潔さが要）
 
-### Naming
+### 命名
 
-- [ ] Skill name does not contain "claude" or "anthropic"
-- [ ] Skill name is descriptive and unambiguous
+- [ ] スキル名に "claude" や "anthropic" を含んでいない
+- [ ] スキル名が説明的で紛れがない
 
-## Post-Development Testing
+## 開発後のテスト
 
-### Trigger Test
+### トリガーテスト
 
-1. Say a trigger phrase from the description — does the skill activate?
-2. Say a related but different phrase — does it still trigger appropriately?
-3. Say something unrelated — does it correctly NOT trigger?
+1. description にあるトリガーフレーズを言う — スキルは起動するか？
+2. 関連するが異なるフレーズを言う — それでも適切に起動するか？
+3. 無関係なことを言う — 正しく起動しないか？
 
-### Functional Test
+### 機能テスト
 
-1. Run the skill with typical input — does it produce expected output?
-2. Run with edge case input — does it handle gracefully?
-3. Run with no arguments — does it prompt or error clearly?
+1. 典型的な入力でスキルを実行する — 期待通りの出力が得られるか？
+2. エッジケースの入力で実行する — 適切に処理できるか？
+3. 引数なしで実行する — 明確にプロンプトを出すか、エラーになるか？
 
-### Tool Integration Test
+### ツール統合テスト
 
-1. Verify all `allowed-tools` are sufficient for the skill's tasks
-2. Confirm no tool calls fail due to missing permissions
-3. Test with `@references/` links — do they resolve correctly?
+1. すべての `allowed-tools` がスキルのタスクに十分か確認する
+2. 権限不足によりツール呼び出しが失敗しないことを確認する
+3. `@references/` のリンクをテストする — 正しく解決されるか？
 
-## Post-Upload Monitoring
+## アップロード後のモニタリング
 
-- [ ] Tested in a real conversation (not just the creation session)
-- [ ] Trigger accuracy is acceptable (no false positives/negatives)
-- [ ] Collected initial user feedback
-- [ ] Documented any needed improvements for next iteration
+- [ ] （作成セッションだけでなく）実際の会話でテストした
+- [ ] トリガー精度が許容できる水準にある（誤検知・見逃しがない）
+- [ ] 最初のユーザーフィードバックを収集した
+- [ ] 次の改善に向けて必要な改善点を文書化した

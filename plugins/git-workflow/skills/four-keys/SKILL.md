@@ -5,9 +5,9 @@ name: four-keys
 disable-model-invocation: true
 context: fork
 description: >-
-  Measures Four Keys (DORA metrics) including deployment frequency, lead time,
-  change failure rate, and MTTR. Use when measuring DevOps performance, or when
-  the user says "four keys", "DORA metrics", or "deployment frequency".
+  デプロイ頻度、変更のリードタイム、変更失敗率、MTTR を含む Four Keys（DORA メトリクス）
+  を計測する。DevOps パフォーマンスの計測時、またはユーザーが "four keys",
+  "DORA metrics", "deployment frequency" と言った場合に使う。
 model: sonnet
 ---
 
@@ -15,46 +15,46 @@ model: sonnet
 
 ## Context
 
-- Current repository: !`gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || echo "Not a GitHub repository"`
-- Default branch: !`gh repo view --json defaultBranchRef -q .defaultBranchRef.name 2>/dev/null || echo "unknown"`
-- GitHub CLI access: Required
+- 現在のリポジトリ: !`gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || echo "Not a GitHub repository"`
+- デフォルトブランチ: !`gh repo view --json defaultBranchRef -q .defaultBranchRef.name 2>/dev/null || echo "unknown"`
+- GitHub CLI アクセス: 必須
 
 ## Overview
 
-Measure the four DORA (DevOps Research and Assessment) metrics from a GitHub repository:
+GitHub リポジトリから4つの DORA (DevOps Research and Assessment) メトリクスを計測する:
 
-1. **Deployment Frequency (DF)** - How often code is deployed to production
-2. **Lead Time for Changes (LT)** - Time from first commit to production deployment
-3. **Change Failure Rate (CFR)** - Percentage of deployments causing failures
-4. **Mean Time to Recovery (MTTR)** - Time to recover from failures
+1. **Deployment Frequency (DF)** - 本番環境へのデプロイ頻度
+2. **Lead Time for Changes (LT)** - 最初のコミットから本番デプロイまでの時間
+3. **Change Failure Rate (CFR)** - デプロイのうち障害を引き起こした割合
+4. **Mean Time to Recovery (MTTR)** - 障害からの復旧にかかる時間
 
 ## Arguments
 
-| Argument | Default | Description |
+| 引数 | デフォルト | 説明 |
 |----------|---------|-------------|
-| `--period` | `90d` | Analysis period: `30d`, `90d`, `180d`, `1y` |
-| `--repo` | (current) | Target repository (`owner/repo`) |
-| `--deploy-tag-pattern` | `v*` | Tag glob pattern for identifying deployments |
-| `--deploy-workflow` | (none) | GitHub Actions workflow name for deployments |
-| `--deploy-branch` | default branch | Branch to track deployments on |
-| `--failure-labels` | `bug,incident,hotfix` | Issue/PR labels indicating deployment failures |
+| `--period` | `90d` | 分析期間: `30d`, `90d`, `180d`, `1y` |
+| `--repo` | (current) | 対象リポジトリ（`owner/repo`） |
+| `--deploy-tag-pattern` | `v*` | デプロイを識別するタグの glob パターン |
+| `--deploy-workflow` | (none) | デプロイに使う GitHub Actions のワークフロー名 |
+| `--deploy-branch` | default branch | デプロイを追跡するブランチ |
+| `--failure-labels` | `bug,incident,hotfix` | デプロイ障害を示す Issue/PR ラベル |
 
 ## Measurement Process
 
-### Step 1: Determine Analysis Period
+### Step 1: 分析期間を決定する
 
-Parse `--period` argument (default: 90d) and calculate the start date.
+`--period` 引数（デフォルト: 90d）をパースし、開始日を計算する。
 
 ```bash
 # Calculate start date
 START_DATE=$(date -v-90d +%Y-%m-%dT00:00:00Z 2>/dev/null || date -d "90 days ago" --iso-8601=seconds 2>/dev/null)
 ```
 
-### Step 2: Identify Deployments
+### Step 2: デプロイを特定する
 
-Try multiple strategies in order of preference:
+以下の戦略を優先順位順に試す:
 
-#### Strategy A: GitHub Actions Workflow Runs (if `--deploy-workflow` specified)
+#### Strategy A: GitHub Actions のワークフロー実行（`--deploy-workflow` 指定時）
 ```bash
 gh run list --workflow "$WORKFLOW" --status completed --branch "$BRANCH" \
   --json createdAt,conclusion,headSha,displayTitle \
@@ -69,7 +69,7 @@ gh release list --limit 200 \
   --jq "[.[] | select(.isPrerelease == false and .createdAt >= \"$START_DATE\")]"
 ```
 
-#### Strategy C: Git Tags matching pattern
+#### Strategy C: パターンに一致する Git タグ
 ```bash
 git tag --sort=-creatordate --format='%(creatordate:iso-strict) %(refname:short)' \
   | while read date tag; do
@@ -79,26 +79,26 @@ git tag --sort=-creatordate --format='%(creatordate:iso-strict) %(refname:short)
   done
 ```
 
-Report which strategy was used and how many deployments were found.
+どの戦略を使い、いくつのデプロイが見つかったかを報告する。
 
 ### Step 3: Deployment Frequency (DF)
 
-Calculate:
-- Total deployments in period
-- Deployments per day / week / month
-- Classify performance level
+以下を計算する:
+- 期間内のデプロイ合計数
+- 日次/週次/月次のデプロイ数
+- パフォーマンスレベルを分類する
 
 **Performance Levels:**
 | Level | Frequency |
 |-------|-----------|
-| Elite | On-demand (multiple per day) |
-| High | Between once per day and once per week |
-| Medium | Between once per week and once per month |
-| Low | Less than once per month |
+| Elite | オンデマンド（1日に複数回） |
+| High | 1日1回〜週1回の間 |
+| Medium | 週1回〜月1回の間 |
+| Low | 月1回未満 |
 
 ### Step 4: Lead Time for Changes (LT)
 
-For each deployment, find the commits included and calculate time from first commit to deploy:
+各デプロイについて、含まれるコミットを特定し、最初のコミットからデプロイまでの時間を計算する:
 
 ```bash
 # For each pair of consecutive deployments (tags/releases)
@@ -106,31 +106,31 @@ git log --format="%H %aI" "$PREV_TAG..$CURRENT_TAG" --first-parent
 # Lead time = deploy timestamp - earliest commit timestamp
 ```
 
-Calculate:
-- Median lead time
-- P50, P90 lead times
-- Classify performance level
+以下を計算する:
+- リードタイムの中央値
+- P50, P90 のリードタイム
+- パフォーマンスレベルを分類する
 
 **Performance Levels:**
 | Level | Lead Time |
 |-------|-----------|
-| Elite | Less than one hour |
-| High | Between one day and one week |
-| Medium | Between one week and one month |
-| Low | More than one month |
+| Elite | 1時間未満 |
+| High | 1日〜1週間の間 |
+| Medium | 1週間〜1ヶ月の間 |
+| Low | 1ヶ月超 |
 
 ### Step 5: Change Failure Rate (CFR)
 
-Identify failures by looking for:
+以下を確認して障害を特定する:
 
-1. **Revert commits** after deployments
+1. デプロイ後の**revert コミット**
 ```bash
 git log --grep="^Revert" --grep="^revert" --format="%H %aI %s" --since="$START_DATE"
 ```
 
-2. **Hotfix deployments** (tags/releases with "hotfix", "fix", "patch" in name)
+2. **hotfix デプロイ**（名前に "hotfix", "fix", "patch" を含むタグ/リリース）
 
-3. **Issues/PRs with failure labels**
+3. **障害ラベル付きの Issue/PR**
 ```bash
 gh issue list --state closed --label "bug,incident,hotfix" \
   --json number,title,createdAt,closedAt \
@@ -138,9 +138,9 @@ gh issue list --state closed --label "bug,incident,hotfix" \
   --limit 200
 ```
 
-Calculate:
-- Number of failure-causing deployments / total deployments
-- Classify performance level
+以下を計算する:
+- 障害を引き起こしたデプロイ数 / デプロイ合計数
+- パフォーマンスレベルを分類する
 
 **Performance Levels:**
 | Level | CFR |
@@ -152,10 +152,10 @@ Calculate:
 
 ### Step 6: Mean Time to Recovery (MTTR)
 
-For identified failures, calculate recovery time:
+特定した障害について、復旧時間を計算する:
 
-1. Match failure events to their resolution (next successful deploy, issue close, fix PR merge)
-2. Calculate time between failure detection and recovery
+1. 障害イベントを、その解決（次の成功デプロイ、issue クローズ、fix PR マージ）と対応付ける
+2. 障害検知から復旧までの時間を計算する
 
 ```bash
 # For issues with failure labels
@@ -167,12 +167,12 @@ gh issue list --state closed --label "bug,incident" \
 **Performance Levels:**
 | Level | MTTR |
 |-------|------|
-| Elite | Less than one hour |
-| High | Less than one day |
-| Medium | Between one day and one week |
-| Low | More than one week |
+| Elite | 1時間未満 |
+| High | 1日未満 |
+| Medium | 1日〜1週間の間 |
+| Low | 1週間超 |
 
-## Output Format
+## 出力フォーマット
 
 ```markdown
 # Four Keys Report
@@ -240,12 +240,12 @@ gh issue list --state closed --label "bug,incident" \
 
 ## Notes
 
-- Requires `gh` CLI authenticated with access to the target repository
-- Accuracy depends on consistent deployment practices (tags, releases, or workflows)
-- Change Failure Rate is approximated from reverts, hotfix tags, and labeled issues
-- MTTR is calculated from issue/incident lifecycle when failure labels are used
-- For best results, use consistent release/tag conventions and label incidents appropriately
-- If no deployment strategy yields results, report the limitation and suggest setup improvements
+- 対象リポジトリへのアクセス権を持つ `gh` CLI の認証が必要
+- 精度は一貫したデプロイ運用（タグ、リリース、ワークフロー）に依存する
+- Change Failure Rate は revert、hotfix タグ、ラベル付き issue から近似的に算出する
+- MTTR は障害ラベルが使われている場合、issue/incident のライフサイクルから計算する
+- 最良の結果を得るには、リリース/タグの命名規則を一貫させ、インシデントに適切にラベルを付けること
+- どのデプロイ検出戦略でも結果が得られない場合は、その制約を報告し、設定改善を提案する
 
 ## Examples
 

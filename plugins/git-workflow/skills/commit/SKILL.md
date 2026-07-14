@@ -4,64 +4,64 @@ allowed-tools: Bash(git:*)
 disable-model-invocation: true
 argument-hint: "[message]"
 description: >-
-  Creates git commits following the Conventional Commits specification.
-  Use when committing changes, writing commit messages, or when the user
-  says "commit", "make a commit", or "conventional commit".
+  Conventional Commits 仕様に従って git commit を作成する。変更のコミット、
+  コミットメッセージの作成時、またはユーザーが "commit", "make a commit",
+  "conventional commit" と言った場合に使う。
 ---
 
 # Conventional Commit Command
 
 ## Context
 
-- Current branch: !`git branch --show-current`
-- Current changes: !`git status`
-- Staged changes: !`git diff --cached --stat`
-- Recent commits: !`git log --oneline -5`
+- 現在のブランチ: !`git branch --show-current`
+- 現在の変更: !`git status`
+- ステージ済みの変更: !`git diff --cached --stat`
+- 直近のコミット: !`git log --oneline -5`
 
-## Your task
+## タスク
 
-Make a commit following the Conventional Commits specification. Check current changes, stage appropriate files, and create a properly formatted commit message.
+Conventional Commits 仕様に従ってコミットを作成する。現在の変更を確認し、適切なファイルをステージして、正しいフォーマットのコミットメッセージを作成する。
 
 ## Steps
 
-1. **Branch guard**: If the current branch is `main` or `master`, create a feature branch first
-   (`git switch -c <type>/<short-description>`). Never commit directly to the base branch.
-2. Check `git status` and `git diff` to understand ALL changes
-3. **Stage only files related to one logical change**:
-   - Stage files individually by path. Do NOT use `git add -A` or `git add .`
-   - If the diff contains unrelated changes, split them into separate commits (repeat steps 3-4)
-   - Never stage credentials, `.env` files, or generated artifacts
-4. Create the commit: `git commit -m "<type>(<scope>): <subject>"`
+1. **ブランチガード**: 現在のブランチが `main` または `master` の場合、先にフィーチャーブランチを作成する
+   （`git switch -c <type>/<short-description>`）。ベースブランチに直接コミットしないこと。
+2. `git status` と `git diff` を確認し、すべての変更を把握する
+3. **1つの論理的な変更に関連するファイルだけをステージする**:
+   - パスを指定して個別にファイルをステージする。`git add -A` や `git add .` は使わない
+   - 差分に無関係な変更が含まれる場合は、別々のコミットに分割する（手順3〜4を繰り返す）
+   - 認証情報、`.env` ファイル、生成物は絶対にステージしない
+4. コミットを作成する: `git commit -m "<type>(<scope>): <subject>"`
 
-## Message Rules
+## メッセージのルール
 
-- Subject: imperative mood, no trailing period, aim for <= 50 chars
-- Scope: optional; use the directory/module name (e.g. `auth`, `api`, `brew`)
-- Body: add only when the "why" is not obvious from the subject
-- Language: English
+- Subject: 命令形、末尾にピリオドなし、50文字以内を目安にする
+- Scope: 任意。ディレクトリ/モジュール名を使う（例: `auth`, `api`, `brew`）
+- Body: subject だけでは「なぜ」が自明でない場合のみ追加する
+- 言語: 英語
 
-### Type selection (decision table)
+### Type の選択（判断テーブル）
 
-| Change | Type |
+| 変更内容 | Type |
 |--------|------|
-| New user-facing behavior | `feat` |
-| Fixes incorrect behavior | `fix` |
-| Code change, behavior unchanged | `refactor` |
-| Tests only | `test` |
-| Docs only | `docs` |
-| Formatting / whitespace only | `style` |
-| Performance improvement | `perf` |
-| Build, deps, config, tooling | `chore` |
+| ユーザー向けの新しい振る舞い | `feat` |
+| 誤った振る舞いの修正 | `fix` |
+| コード変更だが振る舞いは不変 | `refactor` |
+| テストのみ | `test` |
+| ドキュメントのみ | `docs` |
+| フォーマット/空白のみ | `style` |
+| パフォーマンス改善 | `perf` |
+| ビルド、依存関係、設定、ツール | `chore` |
 
-If multiple types apply to a single commit, pick by priority: `feat` > `fix` > `refactor` > others.
+1つのコミットに複数の type が該当する場合は、優先順位で選ぶ: `feat` > `fix` > `refactor` > その他。
 
-### Examples
+### 例
 
 ```bash
 git commit -m "feat(auth): add OAuth2 login support"
 ```
 
-With body:
+Body 付き:
 ```bash
 git commit -m "fix(api): handle null response from server
 
@@ -71,15 +71,15 @@ git commit -m "fix(api): handle null response from server
 
 ### Breaking Changes
 
-Indicate with `!` before colon or `BREAKING CHANGE:` footer:
+コロンの前に `!` を付けるか、`BREAKING CHANGE:` フッターで示す:
 ```bash
 git commit -m "feat(api)!: change response format
 
 BREAKING CHANGE: response now returns array instead of object"
 ```
 
-## Before finishing, verify
+## 完了前に確認する
 
-- [ ] Commit was NOT made on `main`/`master`
-- [ ] `git status` shows no accidentally staged unrelated files
-- [ ] Subject follows `<type>(<scope>): <subject>` and is in English
+- [ ] `main`/`master` にコミットしていない
+- [ ] `git status` に無関係なファイルが誤ってステージされていない
+- [ ] Subject が `<type>(<scope>): <subject>` の形式で、英語で書かれている

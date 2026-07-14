@@ -3,63 +3,63 @@ name: dependabot-merge
 allowed-tools: Bash(gh:*)
 disable-model-invocation: true
 description: >-
-  Auto-reviews and enables auto-merge for all open Dependabot PRs.
-  Supports single repo, org-wide, or multi-repo processing.
-  Use when merging dependency updates, or when the user says "merge dependabot",
-  "auto-merge deps", "handle dependabot PRs", or "org全体のdependabot".
+  すべてのオープンな Dependabot PR を自動レビューし、auto-merge を有効化する。
+  単一リポジトリ、org 全体、複数リポジトリのいずれの処理にも対応する。
+  依存関係更新のマージ時、またはユーザーが "merge dependabot",
+  "auto-merge deps", "handle dependabot PRs", "org全体のdependabot" と言った場合に使う。
 argument-hint: "[--dry-run] [--include-major] [--org <name>] [--repo <owner/name>]"
 ---
 
 # Dependabot Auto-Merge Skill
 
-Automatically review and enable auto-merge for all open Dependabot PRs.
-Supports single repo, org-wide, or specific repo targeting.
+すべてのオープンな Dependabot PR を自動レビューし、auto-merge を有効化する。
+単一リポジトリ、org 全体、特定リポジトリへの絞り込みに対応する。
 
 ## Context
 
-- **Repository**: Current git repository, specific repo, or all repos in an org
-- **Target**: PRs authored by `app/dependabot`
-- **State**: Open PRs only
+- **Repository**: 現在の git リポジトリ、特定のリポジトリ、または org 内のすべてのリポジトリ
+- **Target**: `app/dependabot` が作成した PR
+- **State**: オープンな PR のみ
 
 ## Arguments
 
-- `--dry-run`: Preview mode. Shows what would be processed without making any changes.
-- `--include-major`: Include major version updates (normally skipped for safety).
-- `--org <name>`: Process all non-archived repos in the specified GitHub organization.
-- `--repo <owner/name>`: Process a specific repository (can be repeated).
+- `--dry-run`: プレビューモード。実際には変更を行わず、処理対象を表示する。
+- `--include-major`: メジャーバージョン更新も対象に含める（通常は安全のためスキップする）。
+- `--org <name>`: 指定した GitHub organization 内の全リポジトリを処理する。
+- `--repo <owner/name>`: 特定のリポジトリを処理する（複数指定可）。
 
-## Scope Resolution
+## スコープの解決
 
-Determine the target scope based on arguments:
+引数に基づき対象スコープを決定する。
 
-### Single Repo (default)
-No `--org` or `--repo` specified. Uses the current git repository.
+### 単一リポジトリ（デフォルト）
+`--org` も `--repo` も指定されない場合。現在の git リポジトリを使用する。
 
-### Org-Wide (`--org <name>`)
-Fetch all non-archived repos in the org, then process each:
+### Org 全体（`--org <name>`）
+org 内の非アーカイブリポジトリを取得し、それぞれを処理する:
 ```bash
 gh repo list <org> --no-archived --source --json nameWithOwner --limit 500 -q '.[].nameWithOwner'
 ```
-- Archived repositories are **always excluded** via `--no-archived`
-- Forks are excluded via `--source` (Dependabot doesn't run on forks by default)
-- Only repos with open Dependabot PRs are processed (skip repos with 0 PRs)
+- アーカイブ済みリポジトリは `--no-archived` により**常に除外**される
+- フォークは `--source` により除外される（Dependabot はデフォルトでフォーク上では動かない）
+- オープンな Dependabot PR があるリポジトリのみ処理する（PR が0件のリポジトリはスキップ）
 
-### Specific Repo (`--repo <owner/name>`)
-Process only the specified repo(s). Multiple `--repo` flags can be used.
+### 特定リポジトリ（`--repo <owner/name>`）
+指定したリポジトリのみを処理する。`--repo` フラグは複数指定できる。
 
 ## Steps
 
-1. **Verify Prerequisites**
-   - Confirm `gh` CLI is authenticated: `gh auth status`
-   - If no `--org` or `--repo`: confirm current directory is a git repository
+1. **前提条件の確認**
+   - `gh` CLI が認証済みであることを確認する: `gh auth status`
+   - `--org` も `--repo` も指定がない場合: カレントディレクトリが git リポジトリであることを確認する
 
-2. **Resolve Target Repos**
-   - **Default**: current repo only
-   - **`--org`**: fetch repo list (see Scope Resolution above)
-   - **`--repo`**: use specified repos directly
-   - Log the number of target repos before processing
+2. **対象リポジトリの解決**
+   - **デフォルト**: 現在のリポジトリのみ
+   - **`--org`**: リポジトリ一覧を取得する（上記「スコープの解決」参照）
+   - **`--repo`**: 指定されたリポジトリをそのまま使う
+   - 処理前に対象リポジトリの数をログ出力する
 
-3. **For Each Target Repo, Fetch Open Dependabot PRs**
+3. **各対象リポジトリについて、オープンな Dependabot PR を取得する**
    ```bash
    # Single repo (current directory)
    gh pr list --author app/dependabot --state open --json number,title,url,headRefName
@@ -67,17 +67,17 @@ Process only the specified repo(s). Multiple `--repo` flags can be used.
    # Specific repo or org-wide iteration
    gh pr list --repo <owner/name> --author app/dependabot --state open --json number,title,url,headRefName
    ```
-   - Skip repos with 0 open Dependabot PRs (no output needed for skipped repos)
+   - オープンな Dependabot PR が0件のリポジトリはスキップする（スキップしたリポジトリの出力は不要）
 
-4. **For Each PR, Determine Update Type**
-   - Parse the PR title to detect version change
-   - Classify as `patch`, `minor`, or `major` (see Version Detection below)
+4. **各 PR について更新タイプを判定する**
+   - PR タイトルをパースしてバージョン変更を検出する
+   - `patch`, `minor`, `major` のいずれかに分類する（下記「バージョン検出」参照）
 
-5. **Skip Major Updates** (unless `--include-major` specified)
-   - Major updates may contain breaking changes
-   - Log skipped PRs for manual review
+5. **メジャー更新はスキップする**（`--include-major` 指定時を除く）
+   - メジャー更新は破壊的変更を含む可能性がある
+   - スキップした PR は手動レビュー用にログ出力する
 
-6. **Fetch PR Diff**
+6. **PR の diff を取得する**
    ```bash
    # Current repo
    gh pr diff <number>
@@ -85,52 +85,52 @@ Process only the specified repo(s). Multiple `--repo` flags can be used.
    gh pr diff <number> --repo <owner/name>
    ```
 
-7. **Review the Changes**
-   - Analyze the diff to understand what changed
-   - Check for any suspicious or unexpected changes
-   - Verify it's a standard dependency update
+7. **変更内容をレビューする**
+   - diff を分析し、何が変更されたかを理解する
+   - 不審な変更や予期しない変更がないか確認する
+   - 標準的な依存関係更新であることを検証する
 
-8. **Post Review Comment** (skip in dry-run)
+8. **レビューコメントを投稿する**（dry-run 時はスキップ）
    ```bash
    gh pr comment <number> -b "<review comment>" [--repo <owner/name>]
    ```
 
-9. **Approve the PR** (skip in dry-run)
+9. **PR を承認する**（dry-run 時はスキップ）
    ```bash
    gh pr review <number> --approve -b "LGTM - automated review by Claude" [--repo <owner/name>]
    ```
 
-10. **Enable Auto-Merge** (skip in dry-run)
+10. **Auto-Merge を有効化する**（dry-run 時はスキップ）
     ```bash
     gh pr merge <number> --auto --merge [--repo <owner/name>]
     ```
 
-11. **Output Summary**
-    - Display table of all processed PRs grouped by repository (for org/multi-repo mode)
-    - Show per-repo and overall statistics (total, processed, skipped, failed)
+11. **サマリーを出力する**
+    - 処理したすべての PR をリポジトリ別にテーブル表示する（org/複数リポジトリモードの場合）
+    - リポジトリごとと全体の統計（合計、処理済み、スキップ、失敗）を表示する
 
-## Version Detection
+## バージョン検出
 
-Dependabot PR titles follow this pattern:
+Dependabot の PR タイトルは以下のパターンに従う:
 - `Bump <package> from <old_version> to <new_version>`
 - `Update <package> requirement from <old_version> to <new_version>`
 
-Version change classification:
-- **Major**: First number changes (e.g., 1.x.x → 2.x.x)
-- **Minor**: Second number changes (e.g., 1.1.x → 1.2.x)
-- **Patch**: Third number changes (e.g., 1.1.1 → 1.1.2)
+バージョン変更の分類:
+- **Major**: 最初の数字が変わる（例: 1.x.x → 2.x.x）
+- **Minor**: 2番目の数字が変わる（例: 1.1.x → 1.2.x）
+- **Patch**: 3番目の数字が変わる（例: 1.1.1 → 1.1.2）
 
-Safety rules (treat as major = skip by default):
-- **0.x versions**: a minor bump on 0.x (e.g., 0.3.x → 0.4.0) may be breaking per semver
-  convention — classify as `major`
-- **Grouped updates** (one PR bumping multiple packages): classify by the LARGEST bump
-  among all packages in the PR
-- **Unparseable version** (no clear old→new semver in the title): classify as `major`
-  and log it for manual review — never guess
+安全のためのルール（major として扱いデフォルトでスキップする）:
+- **0.x バージョン**: 0.x でのマイナーバンプ（例: 0.3.x → 0.4.0）は semver の慣習上
+  破壊的変更となりうる — `major` として分類する
+- **グループ化された更新**（1つの PR で複数パッケージを更新）: PR 内の全パッケージのうち
+  最も大きいバンプで分類する
+- **パースできないバージョン**（タイトルに明確な old→new の semver がない）: `major` として
+  分類し、手動レビュー用にログ出力する — 推測しない
 
 ## Review Comment Template
 
-Use English for all review comments:
+レビューコメントはすべて英語で書く:
 
 ```markdown
 ## Automated Dependency Update Review
@@ -150,7 +150,7 @@ This update has been reviewed and approved for auto-merge.
 *Reviewed by Claude Code*
 ```
 
-## Output Format
+## 出力フォーマット
 
 ### Single Repo Mode
 
@@ -173,7 +173,7 @@ This update has been reviewed and approved for auto-merge.
 
 ### Org / Multi-Repo Mode
 
-Group results by repository:
+結果をリポジトリ別にグループ化する:
 
 ```markdown
 ## Dependabot Auto-Merge Summary — org: <org-name>
@@ -201,24 +201,24 @@ Group results by repository:
 
 ## Safety Notes
 
-1. **Major updates are skipped by default** because they may contain breaking changes that require manual review and testing.
+1. **メジャー更新はデフォルトでスキップする** — 破壊的変更を含む可能性があり、手動レビューとテストが必要になるため。
 
-2. **Always review the diff** before approving. Look for:
-   - Unexpected file changes outside of lockfiles
-   - Suspicious code modifications
-   - Changes to configuration files
+2. **承認前に必ず diff をレビューする**。以下を確認する:
+   - lockfile 以外での予期しないファイル変更
+   - 不審なコード変更
+   - 設定ファイルの変更
 
-3. **Auto-merge requires repository settings**:
-   - Auto-merge must be enabled in repository settings
-   - Branch protection rules may require status checks to pass
+3. **Auto-merge にはリポジトリ設定が必要**:
+   - リポジトリ設定で auto-merge が有効になっている必要がある
+   - ブランチ保護ルールでステータスチェックの通過が必須の場合がある
 
-4. **Dry-run first**: Always use `--dry-run` on unfamiliar repositories to preview what would be processed.
+4. **まず dry-run で確認する**: 慣れないリポジトリでは必ず `--dry-run` を使い、処理対象を事前に確認する。
 
 ## Error Handling
 
-- If a PR cannot be processed, log the error and continue with the next PR
-- Report all failures in the final summary
-- Common issues:
-  - Merge conflicts (PR needs rebase)
-  - Failed status checks
-  - Missing permissions
+- PR を処理できない場合、エラーをログに残し、次の PR の処理を続ける
+- 最終サマリーですべての失敗を報告する
+- よくある問題:
+  - マージコンフリクト（PR に rebase が必要）
+  - ステータスチェックの失敗
+  - 権限不足

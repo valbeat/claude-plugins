@@ -1,6 +1,6 @@
 {
   "name": "skill-tools",
-  "description": "Meta skills — create new Claude skills and maintain CLAUDE.md rules",
+  "description": "メタスキル — スキル作成と CLAUDE.md ルール管理",
   "version": "0.1.0",
   "author": {
     "name": "valbeat"

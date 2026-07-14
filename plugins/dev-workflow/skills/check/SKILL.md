@@ -2,53 +2,54 @@
 name: check
 allowed-tools: Read, Bash
 description: >-
-  Executes project quality checks including linter, formatter, build, and tests.
-  Auto-detects project type from config files (package.json, go.mod, Cargo.toml, pyproject.toml).
+  linter、formatter、build、test を含むプロジェクトの品質チェックを実行する。
+  設定ファイル（package.json, go.mod, Cargo.toml, pyproject.toml）からプロジェクト
+  種別を自動判定する。
   Trigger conditions: コード変更後の品質確認時、CI相当のローカルチェック実行時。
   Use when user says "check", "run tests", "lint", "format", "チェック", "テスト実行", or "品質確認".
 argument-hint: "[--test|--lint|--format|--build|--all]"
 ---
 
-# Run Project Checks
+# プロジェクトチェックの実行
 
 ## Context
 
-- Project type detection: !`ls package.json Makefile pyproject.toml Cargo.toml go.mod 2>/dev/null || echo "No standard project files found"`
-- Current directory: !`pwd`
+- プロジェクト種別の検出: !`ls package.json Makefile pyproject.toml Cargo.toml go.mod 2>/dev/null || echo "No standard project files found"`
+- 現在のディレクトリ: !`pwd`
 
-## Your task
+## タスク
 
-Execute project quality checks. Identify the project type and run appropriate checks.
+プロジェクトの品質チェックを実行する。プロジェクト種別を特定し、適切なチェックを実行する。
 
-## Arguments
+## 引数
 
-- `--test`: Run tests only
-- `--lint`: Run linter only
-- `--format`: Run formatter only
-- `--build`: Run build only
-- `--all` or no args: Run all checks (format → lint → build → test)
+- `--test`: テストのみ実行
+- `--lint`: リンターのみ実行
+- `--format`: フォーマッターのみ実行
+- `--build`: ビルドのみ実行
+- `--all` または引数なし: すべてのチェックを実行（format → lint → build → test）
 
-## Steps
+## 手順
 
-1. **Detect project type** by checking for config files:
+1. **設定ファイルからプロジェクト種別を検出する**:
    - `package.json` → Node.js
    - `go.mod` → Go
    - `Cargo.toml` → Rust
    - `pyproject.toml` / `setup.cfg` → Python
-   - `Makefile` → Make-based
+   - `Makefile` → Make ベース
 
-2. **Resolve commands** by priority:
-   1. Project-defined commands: `package.json` scripts / `Makefile` targets /
-      commands used in `.github/workflows/`
-   2. Only if none exist, fall back to the language defaults below
+2. **優先順位に従いコマンドを決定する**:
+   1. プロジェクト定義のコマンドを最優先: `package.json` の scripts / `Makefile` の
+      ターゲット / `.github/workflows/` で使われているコマンド
+   2. 上記が存在しない場合のみ、下記の言語標準コマンドにフォールバックする
 
-3. **Run checks** in order (for `--all`):
-   - Formatter (auto-fix first)
-   - Linter (catch issues)
-   - Build (compile check)
-   - Tests (verify functionality)
+3. **チェックを順番に実行する**（`--all` の場合）:
+   - フォーマッター（まず自動修正）
+   - リンター（問題を検出）
+   - ビルド（コンパイルチェック）
+   - テスト（機能を検証）
 
-## Commands by Language
+## 言語別コマンド
 
 ### Go
 ```bash
@@ -118,7 +119,7 @@ mypy . || pyright
 pytest
 ```
 
-## Output Format
+## 出力フォーマット
 
 ```
 ## Quality Check Results
@@ -140,16 +141,16 @@ pytest
 Overall: PASSED / FAILED
 ```
 
-## Integration with /impl
+## /impl との連携
 
-When called from `/impl`:
-- `--test` is commonly used during RED/GREEN/REFACTOR cycles
-- Full checks (`--all`) run at phase completion
+`/impl` から呼び出された場合:
+- `--test` は RED/GREEN/REFACTOR サイクル中に頻繁に使用される
+- フェーズ完了時にはフルチェック（`--all`）を実行する
 
-## Notes
+## 注意事項
 
-- Run formatter before linter to auto-fix issues
-- If a check fails, report the failing command and its actual output verbatim, then stop (for `--all` mode)
-- Never report PASSED without having actually run the command
-- Check project's README for specific instructions
-- For CI alignment, ensure local checks match pipeline
+- リンターの前にフォーマッターを実行し、問題を自動修正する
+- チェックが失敗した場合、失敗したコマンドと実際の出力をそのまま報告し停止する（`--all` モードの場合）
+- 実際にコマンドを実行せずに PASSED と報告してはならない
+- プロジェクト固有の指示は README を確認する
+- CI との整合性のため、ローカルチェックがパイプラインと一致することを確認する

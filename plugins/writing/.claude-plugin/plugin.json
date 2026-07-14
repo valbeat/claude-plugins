@@ -1,6 +1,6 @@
 {
   "name": "writing",
-  "description": "Japanese technical writing standards — style, rigor, and cognitive rhythm for technical prose",
+  "description": "日本語技術文書の文章規範 — 整形・論証の厳密さ・認知リズムの設計",
   "version": "0.1.0",
   "author": {
     "name": "valbeat"

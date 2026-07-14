@@ -1,25 +1,25 @@
-# Common CI Failure Patterns
+# よくある CI 失敗パターン
 
-## Test Failures
-- Existing tests broken by new code
-- Incorrect environment variable or mock configuration
-- Asynchronous timing issues
+## テストの失敗
+- 新しいコードによって既存のテストが壊れている
+- 環境変数やモックの設定が誤っている
+- 非同期処理のタイミングの問題
 
-## Linting Errors
-- ESLint/Clippy warnings
-- Unused variables or imports
-- Code convention violations
+## Lint エラー
+- ESLint/Clippy の警告
+- 未使用の変数やインポート
+- コーディング規約違反
 
-## Type Errors
-- TypeScript/Rust type mismatches
-- Handling of null/undefined
-- Generics issues
+## 型エラー
+- TypeScript/Rust の型不一致
+- null/undefined の扱い
+- ジェネリクスの問題
 
-## Formatting Errors
-- Forgetting to apply Prettier/rustfmt
-- Indentation or spacing issues
+## フォーマットエラー
+- Prettier/rustfmt の適用忘れ
+- インデントやスペースの問題
 
-## Build Errors
-- Dependency problems
-- Environment-specific configurations
-- Version mismatches
+## ビルドエラー
+- 依存関係の問題
+- 環境固有の設定
+- バージョンの不一致

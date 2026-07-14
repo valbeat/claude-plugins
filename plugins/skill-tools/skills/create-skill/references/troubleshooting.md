@@ -1,68 +1,68 @@
-# Troubleshooting
+# トラブルシューティング
 
-## Skill Won't Upload / Parse Errors
+## スキルがアップロードされない／パースエラーになる
 
-**Symptoms**: Skill doesn't appear in the skill list, or frontmatter values are garbled.
+**症状**: スキルがスキル一覧に表示されない、または frontmatter の値が壊れている。
 
-**Common causes**:
-- Frontmatter delimiters (`---`) missing or malformed
-- XML angle brackets (`<`, `>`) in description or other frontmatter fields
-- YAML syntax error (unescaped colons, missing quotes on special characters)
-- File not named exactly `SKILL.md` (case-sensitive)
+**よくある原因**:
+- frontmatter の区切り記号（`---`）が欠けている、または不正
+- description や他の frontmatter フィールドに XML の山括弧（`<`, `>`）が含まれている
+- YAML の構文エラー（コロンのエスケープ漏れ、特殊文字のクォート漏れ）
+- ファイル名が正確に `SKILL.md` になっていない（大文字小文字を区別する）
 
-**Fix**: Validate frontmatter manually. Use `>-` for multi-line description. Escape special YAML characters.
+**対処法**: frontmatter を手動で検証する。複数行の description には `>-` を使う。YAML の特殊文字はエスケープする。
 
-## Skill Doesn't Trigger
+## スキルが起動しない
 
-**Symptoms**: Saying trigger phrases doesn't activate the skill.
+**症状**: トリガーフレーズを言ってもスキルが起動しない。
 
-**Common causes**:
-- Description is too vague — Claude can't match intent
-- Missing trigger phrases in description
-- Another skill's description is a closer match
+**よくある原因**:
+- description が曖昧すぎて Claude が意図をマッチできない
+- description にトリガーフレーズが含まれていない
+- 別のスキルの description の方がより近いマッチになっている
 
-**Fix**: Add explicit trigger phrases to description. Test with exact phrases. Check competing skills.
+**対処法**: description に明示的なトリガーフレーズを追加する。正確なフレーズでテストする。競合するスキルを確認する。
 
-## Skill Triggers Too Often (False Positives)
+## スキルが起動しすぎる（誤検知）
 
-**Symptoms**: Skill activates on unrelated requests.
+**症状**: 無関係なリクエストでスキルが起動する。
 
-**Common causes**:
-- Description is too broad ("helps with code")
-- Trigger phrases overlap with common requests
-- Missing "Use when" qualifier to narrow scope
+**よくある原因**:
+- description が広すぎる（「helps with code」など）
+- トリガーフレーズがよくあるリクエストと重複している
+- スコープを絞る「Use when」の条件が欠けている
 
-**Fix**: Add "Use when" conditions. Make trigger phrases more specific. Add "Do NOT use when" if needed.
+**対処法**: 「Use when」の条件を追加する。トリガーフレーズをより具体的にする。必要なら「Do NOT use when」も追加する。
 
-## Instructions Not Followed
+## 指示に従わない
 
-**Symptoms**: Skill activates but doesn't follow the defined steps.
+**症状**: スキルは起動するが、定義した手順どおりに動かない。
 
-**Common causes**:
-- Instructions are too vague or ambiguous
-- Too many instructions (context overload)
-- Conflicting instructions between skill and CLAUDE.md
-- Missing concrete examples
+**よくある原因**:
+- 指示が曖昧または不明瞭
+- 指示が多すぎる（コンテキストの過負荷）
+- スキルと CLAUDE.md の指示が矛盾している
+- 具体的な例が欠けている
 
-**Fix**: Simplify instructions. Add explicit examples of expected behavior. Use numbered steps. Move detailed reference to `@references/` files.
+**対処法**: 指示をシンプルにする。期待する挙動の具体例を追加する。番号付きのステップにする。詳細な参照情報は `@references/` ファイルに移す。
 
-## Context Too Large
+## コンテキストが大きすぎる
 
-**Symptoms**: Skill works but is slow, or referenced files aren't fully loaded.
+**症状**: スキルは動くが遅い、または参照ファイルが完全には読み込まれない。
 
-**Common causes**:
-- Too many `@references/` files loaded eagerly
-- Referenced files are very large
-- `!command` outputs are verbose
+**よくある原因**:
+- `@references/` ファイルを一度に読み込みすぎている
+- 参照しているファイルが非常に大きい
+- `!command` の出力が冗長
 
-**Fix**: Split into smaller reference files. Only `@reference` what's needed per step. Use progressive disclosure — load details only when that step is reached.
+**対処法**: より小さな参照ファイルに分割する。各ステップで必要な `@reference` だけを読み込む。プログレッシブディスクロージャーを使い、そのステップに到達したときだけ詳細を読み込む。
 
-## Arguments Not Parsed
+## 引数がパースされない
 
-**Symptoms**: `$ARGUMENTS`, `$1`, `$2` are empty or wrong.
+**症状**: `$ARGUMENTS`, `$1`, `$2` が空、または想定と異なる。
 
-**Common causes**:
-- User invoked skill without arguments
-- Argument format doesn't match `argument-hint`
+**よくある原因**:
+- ユーザーが引数なしでスキルを呼び出した
+- 引数のフォーマットが `argument-hint` と一致しない
 
-**Fix**: Add fallback behavior when arguments are empty. Document expected format in `argument-hint`. Add examples showing correct invocation.
+**対処法**: 引数が空の場合のフォールバック挙動を追加する。想定するフォーマットを `argument-hint` に明記する。正しい呼び出し方を示す例を追加する。

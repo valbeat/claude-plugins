@@ -1,6 +1,6 @@
 {
   "name": "design",
-  "description": "Design analysis skills — extract design guidelines from images and audit UI against web interface guidelines",
+  "description": "デザイン分析スキル — 画像からのガイドライン抽出と Web Interface Guidelines 準拠監査",
   "version": "0.1.0",
   "author": {
     "name": "valbeat"
