@@ -99,8 +99,21 @@ AskUserQuestion({
 
 ### 設計レビュー (Fable エージェント)
 
-DESIGN.md のドラフト作成後、ユーザー承認の**前に**、単一の Fable エージェントで
-設計レビューを行う（1回の /spec につき最大1エージェント）:
+DESIGN.md のドラフト作成後、ユーザー承認の**前に**、Fable エージェントで
+設計レビューを行う。
+
+起動する体数は budget tier で決める:
+
+```bash
+bash ~/.claude/skills/rate-pace/scripts/pace.sh tier   # -> L0 | L1 | L2
+```
+
+- `L2` … 2体を**並列**で起動する。1体目は下記のレビュー、2体目は
+  「この設計を採用しない理由を探す」反証役（プロンプトは後述）
+- それ以外（`L0` / `L1`、判定失敗・コマンド不在を含む）… 1体のみ
+
+判定できない場合は必ず1体側に倒す。tier の詳細は `~/.claude/CLAUDE.md` の
+**Budget Tier** を参照。
 
 ```
 subagent_type: general-purpose
@@ -121,8 +134,34 @@ prompt: |
   or exactly "Design is sound." if none.
 ```
 
+`L2` のときは、上記と**並列**で反証役をもう1体起動する:
+
+```
+subagent_type: general-purpose
+model: fable
+prompt: |
+  You are arguing against a design that is about to be approved. Read
+  docs/DESIGN.md and the files it references.
+
+  Your job is not to polish it but to find the strongest case for a
+  DIFFERENT architecture. Specifically:
+  1. Name one concrete alternative structure and say what it would make
+     easier that this design makes hard.
+  2. Identify the assumption that, if wrong, invalidates the most of this
+     design. State how you would test it cheaply before committing.
+  3. Point out anything this design makes irreversible. Reversible choices
+     do not need this scrutiny; irreversible ones do.
+
+  Ground every claim in the actual repository — cite files. Do not invent
+  requirements the document does not state.
+
+  Return: the alternative and its trade-off, or exactly
+  "No stronger alternative found." if the design genuinely dominates.
+```
+
 指摘があれば DESIGN.md に反映してからユーザー承認に進む。
-"Design is sound." の場合はそのまま進む。
+"Design is sound." の場合はそのまま進む。2体起動した場合、両者が食い違ったら
+反証役の指摘を DESIGN.md の Trade-offs 節に明記した上で判断をユーザーに委ねる。
 
 ### ユーザー承認
 
