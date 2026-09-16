@@ -102,18 +102,24 @@ AskUserQuestion({
 DESIGN.md のドラフト作成後、ユーザー承認の**前に**、Fable エージェントで
 設計レビューを行う。
 
-起動する体数は budget tier で決める:
+反証役を付けるかどうかと、誰が担当するかは、レート枠の状況で決める。
+`rate-pace` スキル（`personal-tools` プラグイン）が入っている環境では、次を**1回だけ**実行する:
 
 ```bash
-bash ~/.claude/skills/rate-pace/scripts/pace.sh tier   # -> L0 | L1 | L2
+RP=$(ls -d ~/.claude/plugins/cache/*/personal-tools/*/skills/rate-pace/scripts 2>/dev/null | sort -V | tail -1)
+[ -n "$RP" ] && bash "$RP/route.sh"
+# -> route=codex claude=L0 codex=L2 ... codex_effort=high reason=ok
 ```
 
-- `L2` … 2体を**並列**で起動する。1体目は下記のレビュー、2体目は
-  「この設計を採用しない理由を探す」反証役（プロンプトは後述）
-- それ以外（`L0` / `L1`、判定失敗・コマンド不在を含む）… 1体のみ
+上から順に最初に当てはまったものを使う:
 
-判定できない場合は必ず1体側に倒す。tier の詳細は `~/.claude/CLAUDE.md` の
-**Budget Tier** を参照。
+| 条件 | 起動するもの |
+|------|-------------|
+| `claude=L2` | Fable 2体を**並列**（1体目は下記のレビュー、2体目は反証役） |
+| `route=codex` かつ `which codex` が成功 | Fable 1体 + Codex の反証役を**並列** |
+| それ以外（出力なし・コマンド不在・判定失敗を含む） | Fable 1体のみ |
+
+判定できない場合は必ず Fable 1体側に倒す。tier と route の定義は `rate-pace` スキルを参照。
 
 ```
 subagent_type: general-purpose
@@ -134,7 +140,16 @@ prompt: |
   or exactly "Design is sound." if none.
 ```
 
-`L2` のときは、上記と**並列**で反証役をもう1体起動する:
+反証役（`claude=L2` なら Fable、`route=codex` なら Codex）:
+
+Codex で実行するときは、下の prompt 本文をそのまま渡し、`/tmp/spec-counter.txt` を読んで結果とする:
+
+```bash
+codex exec -s read-only --ephemeral -C "$(pwd)" -c model_reasoning_effort=<route.sh の codex_effort> \
+  -o /tmp/spec-counter.txt "<下の prompt 本文> 確認や質問は不要です。"
+```
+
+Fable で実行するとき:
 
 ```
 subagent_type: general-purpose
@@ -160,7 +175,7 @@ prompt: |
 ```
 
 指摘があれば DESIGN.md に反映してからユーザー承認に進む。
-"Design is sound." の場合はそのまま進む。2体起動した場合、両者が食い違ったら
+"Design is sound." の場合はそのまま進む。反証役を起動した場合、両者が食い違ったら
 反証役の指摘を DESIGN.md の Trade-offs 節に明記した上で判断をユーザーに委ねる。
 
 ### ユーザー承認
