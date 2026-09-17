@@ -1,0 +1,44 @@
+{
+  "name": "valbeat-plugins",
+  "interface": {
+    "displayName": "valbeat plugins"
+  },
+  "plugins": [
+    {
+      "name": "writing",
+      "source": {
+        "source": "local",
+        "path": "./plugins/writing"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "design",
+      "source": {
+        "source": "local",
+        "path": "./plugins/design"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Design"
+    },
+    {
+      "name": "git-workflow",
+      "source": {
+        "source": "local",
+        "path": "./plugins/git-workflow"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Coding"
+    }
+  ]
+}
