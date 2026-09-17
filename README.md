@@ -1,18 +1,20 @@
-# claude-plugins
+# agent-plugins
 
-[valbeat](https://github.com/valbeat) の個人用 [Claude Code](https://code.claude.com/docs) プラグインマーケットプレイス。スキル本文はすべて日本語で書かれている。
+[valbeat](https://github.com/valbeat) の個人用プラグインマーケットプレイス。[Claude Code](https://code.claude.com/docs) 向けに書いており、Codex も `.claude-plugin/marketplace.json` を読んで同じプラグインを入れられる。スキル本文はすべて日本語で書かれている。
+
+旧名 `claude-plugins`（2026-09-17 に改名。マーケットプレイス名 `valbeat-plugins` とプラグイン ID は変えていない）。
 
 ## インストール
 
 ```
-/plugin marketplace add valbeat/claude-plugins
+/plugin marketplace add valbeat/agent-plugins
 /plugin install writing@valbeat-plugins
 ```
 
 CLI から:
 
 ```shell
-claude plugin marketplace add valbeat/claude-plugins
+claude plugin marketplace add valbeat/agent-plugins
 claude plugin install writing@valbeat-plugins
 ```
 
